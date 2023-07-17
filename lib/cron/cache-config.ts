@@ -33,6 +33,12 @@ export const chainProtocols = [
     timeout: 90000,
     provider: new V3SubgraphProvider(ChainId.BSC, 3, 90000),
   },
+  {
+    protocol: Protocol.V3,
+    chainId: ChainId.HARMONY,
+    timeout: 90000,
+    provider: new V3SubgraphProvider(ChainId.HARMONY, 3, 90000),
+  },
   // Currently there is no working V3 subgraph for Optimism so we use a static provider.
   // V2.
 

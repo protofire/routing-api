@@ -109,6 +109,10 @@ export async function tokenStringToCurrency(
   if (NATIVE_NAMES_BY_ID[chainId]!.includes(tokenRaw)) {
     token = nativeOnChain(chainId)
   } else if (isAddress(tokenRaw)) {
+    if(!tokenListProvider) {
+      throw new Error('tokenListProvider not defined _ ' + tokenRaw);
+    }
+
     token = await tokenListProvider.getTokenByAddress(tokenRaw)
   }
 
@@ -129,6 +133,11 @@ export async function tokenStringToCurrency(
   log.info(`Getting input token ${tokenRaw} from chain`)
   if (!token && isAddress(tokenRaw)) {
     const tokenAccessor = await tokenProvider.getTokens([tokenRaw])
+
+    if(!tokenAccessor) {
+      throw new Error('tokenAccessor not defined _ ' + tokenRaw);
+    }
+
     return tokenAccessor.getTokenByAddress(tokenRaw)
   }
 
