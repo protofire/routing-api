@@ -61,8 +61,9 @@ export const SUPPORTED_CHAINS: ChainId[] = [
   ChainId.BNB,
   ChainId.AVALANCHE,
   ChainId.BASE,
+  ChainId.HARMONY,
 ]
-const DEFAULT_TOKEN_LIST = 'https://gateway.ipfs.io/ipns/tokens.uniswap.org'
+const DEFAULT_TOKEN_LIST = 'https://raw.githubusercontent.com/harmony-one/interface/hmy-mainnet-updates/public/tokenlist.json'
 
 export interface RequestInjected<Router> extends BaseRInj {
   chainId: ChainId
