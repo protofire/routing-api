@@ -1,5 +1,5 @@
-import { TradeType } from '@uniswap/sdk-core'
-import { CacheMode, ChainId } from '@uniswap/smart-order-router'
+import { ChainId, TradeType } from '@uniswap/sdk-core'
+import { CacheMode } from '@uniswap/smart-order-router'
 import { CachedRoutesStrategy } from './model/cached-routes-strategy'
 import { PairTradeTypeChainId } from './model/pair-trade-type-chain-id'
 import { CachedRoutesBucket } from './model/cached-routes-bucket'
@@ -191,17 +191,18 @@ export const CACHED_ROUTES_CONFIGURATION: Map<string, CachedRoutesStrategy> = ne
         new CachedRoutesBucket({ bucket: 0.05, cacheMode: CacheMode.Darkmode }),
         new CachedRoutesBucket({ bucket: 0.1, cacheMode: CacheMode.Tapcompare, withLastNCachedRoutes: 10 }),
         new CachedRoutesBucket({ bucket: 0.5, cacheMode: CacheMode.Tapcompare, withLastNCachedRoutes: 10 }),
-        new CachedRoutesBucket({ bucket: 1, cacheMode: CacheMode.Tapcompare, withLastNCachedRoutes: 10 }),
-        new CachedRoutesBucket({ bucket: 2, cacheMode: CacheMode.Tapcompare, withLastNCachedRoutes: 5 }),
-        new CachedRoutesBucket({ bucket: 4, cacheMode: CacheMode.Tapcompare, withLastNCachedRoutes: 5 }),
-        new CachedRoutesBucket({ bucket: 6, cacheMode: CacheMode.Tapcompare, withLastNCachedRoutes: 5 }),
-        new CachedRoutesBucket({ bucket: 10, cacheMode: CacheMode.Tapcompare, withLastNCachedRoutes: 5 }),
-        new CachedRoutesBucket({ bucket: 16, cacheMode: CacheMode.Tapcompare, withLastNCachedRoutes: 5 }),
-        new CachedRoutesBucket({ bucket: 30, cacheMode: CacheMode.Tapcompare, withLastNCachedRoutes: 5 }),
-        new CachedRoutesBucket({ bucket: 45, cacheMode: CacheMode.Tapcompare, withLastNCachedRoutes: 5 }),
-        new CachedRoutesBucket({ bucket: 80, cacheMode: CacheMode.Tapcompare, withLastNCachedRoutes: 5 }),
-        new CachedRoutesBucket({ bucket: 95, cacheMode: CacheMode.Tapcompare, withLastNCachedRoutes: 5 }),
-        new CachedRoutesBucket({ bucket: 110, cacheMode: CacheMode.Tapcompare, withLastNCachedRoutes: 5 }),
+        new CachedRoutesBucket({ bucket: 1, cacheMode: CacheMode.Livemode, withLastNCachedRoutes: 10 }),
+        new CachedRoutesBucket({ bucket: 2, cacheMode: CacheMode.Tapcompare, withLastNCachedRoutes: 10 }),
+        new CachedRoutesBucket({ bucket: 4, cacheMode: CacheMode.Tapcompare, withLastNCachedRoutes: 10 }),
+        new CachedRoutesBucket({ bucket: 6, cacheMode: CacheMode.Tapcompare, withLastNCachedRoutes: 10 }),
+        new CachedRoutesBucket({ bucket: 10, cacheMode: CacheMode.Tapcompare, withLastNCachedRoutes: 10 }),
+        new CachedRoutesBucket({ bucket: 16, cacheMode: CacheMode.Tapcompare, withLastNCachedRoutes: 10 }),
+        new CachedRoutesBucket({ bucket: 30, cacheMode: CacheMode.Tapcompare, withLastNCachedRoutes: 10 }),
+        new CachedRoutesBucket({ bucket: 45, cacheMode: CacheMode.Tapcompare, withLastNCachedRoutes: 10 }),
+        new CachedRoutesBucket({ bucket: 55, cacheMode: CacheMode.Livemode, withLastNCachedRoutes: 10 }),
+        new CachedRoutesBucket({ bucket: 80, cacheMode: CacheMode.Tapcompare, withLastNCachedRoutes: 10 }),
+        new CachedRoutesBucket({ bucket: 95, cacheMode: CacheMode.Tapcompare, withLastNCachedRoutes: 10 }),
+        new CachedRoutesBucket({ bucket: 110, cacheMode: CacheMode.Tapcompare, withLastNCachedRoutes: 10 }),
       ],
     }),
   ],

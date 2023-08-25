@@ -1,10 +1,9 @@
-import { Token } from '@uniswap/sdk-core'
+import { ChainId, Token } from '@uniswap/sdk-core'
 import {
   CachingGasStationProvider,
   CachingTokenListProvider,
   CachingTokenProviderWithFallback,
   CachingV3PoolProvider,
-  ChainId,
   EIP1559GasPriceProvider,
   FallbackTenderlySimulator,
   TenderlySimulator,
@@ -44,25 +43,25 @@ import { AWSTokenListProvider } from './router-entities/aws-token-list-provider'
 import { DynamoRouteCachingProvider } from './router-entities/route-caching/dynamo-route-caching-provider'
 import { DynamoDBCachingV3PoolProvider } from './pools/pool-caching/v3/dynamo-caching-pool-provider'
 import { TrafficSwitchV3PoolProvider } from './pools/provider-migration/v3/traffic-switch-v3-pool-provider'
+import { DefaultEVMClient } from './evm/EVMClient'
+import { InstrumentedEVMProvider } from './evm/provider/InstrumentedEVMProvider'
+import { deriveProviderName } from './evm/provider/ProviderName'
 
 export const SUPPORTED_CHAINS: ChainId[] = [
   ChainId.MAINNET,
-  ChainId.RINKEBY,
-  ChainId.ROPSTEN,
-  ChainId.KOVAN,
   ChainId.OPTIMISM,
-  ChainId.OPTIMISTIC_KOVAN,
   ChainId.ARBITRUM_ONE,
-  ChainId.ARBITRUM_RINKEBY,
   ChainId.ARBITRUM_GOERLI,
   ChainId.POLYGON,
   ChainId.POLYGON_MUMBAI,
-  ChainId.GÖRLI,
+  ChainId.GOERLI,
   ChainId.SEPOLIA,
   ChainId.CELO,
   ChainId.CELO_ALFAJORES,
-  ChainId.BSC,
-  ChainId.HARMONY
+  ChainId.BNB,
+  ChainId.AVALANCHE,
+  ChainId.BASE,
+  ChainId.HARMONY,
 ]
 const DEFAULT_TOKEN_LIST = 'https://gateway.ipfs.io/ipns/tokens.uniswap.org'
 
@@ -136,7 +135,6 @@ export abstract class InjectorSOR<Router, QueryParams> extends Injector<
         let timeout: number
         switch (chainId) {
           case ChainId.ARBITRUM_ONE:
-          case ChainId.ARBITRUM_RINKEBY:
             timeout = 8000
             break
           default:
@@ -144,13 +142,18 @@ export abstract class InjectorSOR<Router, QueryParams> extends Injector<
             break
         }
 
-        const provider = new ethers.providers.JsonRpcProvider(
-          {
-            url: url,
-            timeout,
-          },
-          chainId
-        )
+        const provider = new DefaultEVMClient({
+          allProviders: [
+            new InstrumentedEVMProvider({
+              url: {
+                url: url,
+                timeout,
+              },
+              network: chainId,
+              name: deriveProviderName(url),
+            }),
+          ],
+        }).getProvider()
 
         const tokenListProvider = await AWSTokenListProvider.fromTokenListS3Bucket(
           chainId,
@@ -173,8 +176,8 @@ export abstract class InjectorSOR<Router, QueryParams> extends Injector<
         // 200*725k < 150m
         let quoteProvider: OnChainQuoteProvider | undefined = undefined
         switch (chainId) {
+          case ChainId.BASE:
           case ChainId.OPTIMISM:
-          case ChainId.OPTIMISTIC_KOVAN:
             quoteProvider = new OnChainQuoteProvider(
               chainId,
               provider,
@@ -208,7 +211,6 @@ export abstract class InjectorSOR<Router, QueryParams> extends Injector<
             )
             break
           case ChainId.ARBITRUM_ONE:
-          case ChainId.ARBITRUM_RINKEBY:
             quoteProvider = new OnChainQuoteProvider(
               chainId,
               provider,
