@@ -2444,6 +2444,8 @@ describe('quote', function () {
     [ChainId.BASE_GOERLI]: () => USDC_ON(ChainId.BASE_GOERLI),
     [ChainId.BASE]: () => USDC_ON(ChainId.BASE),
     [ChainId.BASE]: () => USDC_NATIVE_BASE,
+    [ChainId.ZORA]: () => null,
+    [ChainId.ZORA_SEPOLIA]: () => null,
   }
 
   const TEST_ERC20_2: { [chainId in ChainId]: () => Token | null } = {
@@ -2466,6 +2468,8 @@ describe('quote', function () {
     [ChainId.AVALANCHE]: () => DAI_ON(ChainId.AVALANCHE),
     [ChainId.BASE_GOERLI]: () => WNATIVE_ON(ChainId.BASE_GOERLI),
     [ChainId.BASE]: () => WNATIVE_ON(ChainId.BASE),
+    [ChainId.ZORA]: () => null,
+    [ChainId.ZORA_SEPOLIA]: () => null,
   }
 
   // TODO: Find valid pools/tokens on optimistic kovan and polygon mumbai. We skip those tests for now.

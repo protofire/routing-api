@@ -46,6 +46,18 @@ export const chainProtocols = [
     timeout: 90000,
     provider: new V3SubgraphProvider(ChainId.BASE, 3, 90000),
   },
+  {
+    protocol: Protocol.V3,
+    chainId: ChainId.ZORA,
+    timeout: 90000,
+    provider: new V3SubgraphProvider(ChainId.ZORA, 3, 90000),
+  },
+  {
+    protocol: Protocol.V3,
+    chainId: ChainId.ZORA_SEPOLIA,
+    timeout: 90000,
+    provider: new V3SubgraphProvider(ChainId.ZORA_SEPOLIA, 3, 90000),
+  },
   // Currently there is no working V3 subgraph for Optimism so we use a static provider.
   // V2.
 

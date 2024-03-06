@@ -41,6 +41,7 @@ export class RoutingDashboardStack extends cdk.NestedStack {
       ChainId.SEPOLIA,
       ChainId.CELO_ALFAJORES,
       ChainId.BASE_GOERLI,
+      ChainId.ZORA_SEPOLIA,
     ]
 
     const MAINNETS = SUPPORTED_CHAINS.filter((chain) => !TESTNETS.includes(chain))

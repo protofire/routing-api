@@ -18,6 +18,8 @@ export function chainIdToNetworkName(networkId: ChainId): string {
       return 'avalanchec'
     case ChainId.BASE:
       return 'base'
+    case ChainId.ZORA:
+      return 'zora'
     default:
       return 'ethereum'
   }
