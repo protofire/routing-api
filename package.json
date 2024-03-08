@@ -19,7 +19,8 @@
     "cdk": "cdk",
     "fix": "run-s fix:*",
     "fix:prettier": "prettier \"./**/*.ts\" --write",
-    "fix:lint": "eslint lib --ext .ts --fix"
+    "fix:lint": "eslint lib --ext .ts --fix",
+    "postinstall": "patch-package"
   },
   "devDependencies": {
     "@jest/globals": "^29.5.0",
@@ -85,7 +86,7 @@
     "@uniswap/default-token-list": "^11.13.0",
     "@uniswap/permit2-sdk": "^1.2.0",
     "@uniswap/router-sdk": "^1.8.0",
-    "@uniswap/sdk-core": "^4.1.2",
+    "@uniswap/sdk-core": "^4.1.4",
     "@uniswap/smart-order-router": "3.24.6",
     "@uniswap/token-lists": "^1.0.0-beta.33",
     "@uniswap/universal-router-sdk": "^1.7.1",
@@ -110,6 +111,7 @@
     "lodash": "^4.17.21",
     "lru-cache": "^10.1.0",
     "node-cache": "^5.1.2",
+    "patch-package": "^8.0.0",
     "punycode": "^2.1.1",
     "qs": "^6.10.1",
     "source-map-support": "^0.5.19",
