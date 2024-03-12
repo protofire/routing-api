@@ -12,6 +12,8 @@ import { ProdConfig, ProdConfigJoi } from './ProdConfig'
 import { chainIdToNetworkName } from './utils'
 import PROD_CONFIG from '../config/rpcProviderProdConfig.json'
 
+const RPC_PLACEHOLDER = 'https://rpc.payload.de'
+
 export class GlobalRpcProviders {
   private static SINGLE_RPC_PROVIDERS: Map<ChainId, SingleJsonRpcProvider[]> | null = null
 
@@ -33,7 +35,9 @@ export class GlobalRpcProviders {
       for (let i = 0; i < chainConfig.providerUrls!.length; i++) {
         const urlEnvVar = chainConfig.providerUrls[i]
         if (process.env[urlEnvVar] === undefined) {
-          throw new Error(`Environmental variable ${urlEnvVar} isn't defined!`)
+          // throw new Error(`Environmental variable ${urlEnvVar} isn't defined!`)
+          chainConfig.providerUrls[i] = RPC_PLACEHOLDER
+          continue
         }
         chainConfig.providerUrls[i] = process.env[urlEnvVar]!
       }
