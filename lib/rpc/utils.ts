@@ -130,7 +130,7 @@ export function generateProviderUrl(key: string, value: string): string {
     case 'ALCHEMY_324': {
       return `https://zksync-mainnet.g.alchemy.com/v2/${tokens[0]}`
     }
-    case 'WEB3_RPC_11124': {
+    case 'WEB3_RPC_GATEWAY_11124': {
       return tokens[0]
     }
   }

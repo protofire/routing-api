@@ -102,6 +102,6 @@
     "latencyEvaluationSampleProb": 0.01,
     "healthCheckSampleProb": 0.01,
     "providerInitialWeights": [1],
-    "providerUrls": ["WEB3_RPC_11124"]
+    "providerUrls": ["WEB3_RPC_GATEWAY_11124"]
   }
 ]
