@@ -2512,6 +2512,7 @@ describe('quote', function () {
     [ChainId.ROOTSTOCK]: () => USDC_ON(ChainId.ROOTSTOCK),
     [ChainId.BLAST]: () => USDB_BLAST,
     [ChainId.ZKSYNC]: () => USDC_ON(ChainId.ZKSYNC),
+    [ChainId.ABSTRACT_TESTNET]: () => USDC_ON(ChainId.ABSTRACT_TESTNET),
   }
 
   const TEST_ERC20_2: { [chainId in ChainId]: () => Token | null } = {
@@ -2540,6 +2541,7 @@ describe('quote', function () {
     [ChainId.ROOTSTOCK]: () => WNATIVE_ON(ChainId.ROOTSTOCK),
     [ChainId.BLAST]: () => WNATIVE_ON(ChainId.BLAST),
     [ChainId.ZKSYNC]: () => WNATIVE_ON(ChainId.ZKSYNC),
+    [ChainId.ABSTRACT_TESTNET]: () => WNATIVE_ON(ChainId.ABSTRACT_TESTNET),
   }
 
   // TODO: Find valid pools/tokens on optimistic kovan and polygon mumbai. We skip those tests for now.
@@ -2553,7 +2555,8 @@ describe('quote', function () {
       // We will follow up supporting ZORA and ROOTSTOCK
       c != ChainId.ZORA_SEPOLIA &&
       c != ChainId.ROOTSTOCK &&
-      c != ChainId.GOERLI
+      c != ChainId.GOERLI &&
+      c != ChainId.ABSTRACT_TESTNET
   )) {
     for (const type of TRADE_TYPES) {
       const erc1 = TEST_ERC20_1[chain]()
