@@ -130,6 +130,9 @@ export function generateProviderUrl(key: string, value: string): string {
     case 'ALCHEMY_324': {
       return `https://zksync-mainnet.g.alchemy.com/v2/${tokens[0]}`
     }
+    case 'WEB3_RPC_11124': {
+      return `https://api.testnet.abs.xyz`
+    }
   }
   throw new Error(`Unknown provider-chainId pair: ${key}`)
 }

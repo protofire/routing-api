@@ -97,6 +97,11 @@ export const OPTIMISTIC_CACHED_ROUTES_BATCH_PARAMS: { [protocol: string]: { [cha
       gasLimitPerCall: 4_000_000,
       quoteMinSuccessRate: 0.1,
     },
+    [ChainId.ABSTRACT_TESTNET]: {
+      multicallChunk: 20,
+      gasLimitPerCall: 4_000_000,
+      quoteMinSuccessRate: 0.1,
+    },
   },
   [Protocol.MIXED]: {
     ...constructSameBatchParamsMap(DEFAULT_BATCH_PARAMS),
@@ -141,6 +146,11 @@ export const OPTIMISTIC_CACHED_ROUTES_BATCH_PARAMS: { [protocol: string]: { [cha
       quoteMinSuccessRate: 0.15,
     },
     [ChainId.ZKSYNC]: {
+      multicallChunk: 20,
+      gasLimitPerCall: 4_000_000,
+      quoteMinSuccessRate: 0.1,
+    },
+    [ChainId.ABSTRACT_TESTNET]: {
       multicallChunk: 20,
       gasLimitPerCall: 4_000_000,
       quoteMinSuccessRate: 0.1,
@@ -201,6 +211,11 @@ export const NON_OPTIMISTIC_CACHED_ROUTES_BATCH_PARAMS: { [protocol: string]: { 
       gasLimitPerCall: 4_000_000,
       quoteMinSuccessRate: 0.1,
     },
+    [ChainId.ABSTRACT_TESTNET]: {
+      multicallChunk: 20,
+      gasLimitPerCall: 4_000_000,
+      quoteMinSuccessRate: 0.1,
+    },
   },
   [Protocol.MIXED]: {
     ...constructSameBatchParamsMap(DEFAULT_BATCH_PARAMS),
@@ -249,6 +264,11 @@ export const NON_OPTIMISTIC_CACHED_ROUTES_BATCH_PARAMS: { [protocol: string]: { 
       gasLimitPerCall: 4_000_000,
       quoteMinSuccessRate: 0.1,
     },
+    [ChainId.ABSTRACT_TESTNET]: {
+      multicallChunk: 20,
+      gasLimitPerCall: 4_000_000,
+      quoteMinSuccessRate: 0.1,
+    },
   },
 }
 
@@ -278,6 +298,10 @@ export const GAS_ERROR_FAILURE_OVERRIDES: { [chainId: number]: FailureOverrides 
     gasLimitOverride: 6_000_000,
     multicallChunk: 10,
   },
+  [ChainId.ABSTRACT_TESTNET]: {
+    gasLimitOverride: 6_000_000,
+    multicallChunk: 10,
+  },
 }
 
 export const SUCCESS_RATE_FAILURE_OVERRIDES: { [chainId: number]: FailureOverrides } = {
@@ -303,6 +327,10 @@ export const SUCCESS_RATE_FAILURE_OVERRIDES: { [chainId: number]: FailureOverrid
     multicallChunk: 45,
   },
   [ChainId.ZKSYNC]: {
+    gasLimitOverride: 6_000_000,
+    multicallChunk: 10,
+  },
+  [ChainId.ABSTRACT_TESTNET]: {
     gasLimitOverride: 6_000_000,
     multicallChunk: 10,
   },
@@ -371,6 +399,7 @@ export const NEW_QUOTER_DEPLOY_BLOCK: { [chainId in ChainId]: number } = {
   [ChainId.ROOTSTOCK]: -1,
   [ChainId.BLAST]: 2370179,
   [ChainId.ZKSYNC]: 35982078,
+  [ChainId.ABSTRACT_TESTNET]: -1,
 }
 
 // 0 threshold means it's not deployed yet
@@ -399,6 +428,7 @@ export const LIKELY_OUT_OF_GAS_THRESHOLD: { [chainId in ChainId]: number } = {
   [ChainId.ROOTSTOCK]: 0,
   [ChainId.BLAST]: 17540 * 2, // 17540 is the single tick.cross cost on blast. We multiply by 2 to be safe,
   [ChainId.ZKSYNC]: 17540 * 2, // 17540 is the single tick.cross cost on zkSync. We multiply by 2 to be safe
+  [ChainId.ABSTRACT_TESTNET]: 0,
 }
 
 // TODO: Move this new addresses to SOR
