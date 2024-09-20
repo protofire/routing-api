@@ -1,6 +1,7 @@
 import { Protocol } from '@uniswap/router-sdk'
 import { V2SubgraphProvider, V3SubgraphProvider, V4SubgraphProvider } from '@uniswap/smart-order-router'
 import { ChainId } from '@uniswap/sdk-core'
+import { forkConfig } from '../../forkConfig'
 
 // during local cdk stack update, the env vars are not populated
 // make sure to fill in the env vars below
@@ -73,7 +74,7 @@ const v3UntrackedUsdThreshold = 25000 // Pools need at least 25K USD (untracked)
 export const v2TrackedEthThreshold = 0.025 // Pairs need at least 0.025 of trackedEth to be selected
 const v2UntrackedUsdThreshold = Number.MAX_VALUE // Pairs need at least 1K USD (untracked) to be selected (for metrics only)
 
-export const chainProtocols = [
+export const chainProtocols = forkConfig.supportLambdaCache ? [
   // V3.
   {
     protocol: Protocol.V3,
@@ -338,4 +339,4 @@ export const chainProtocols = [
       v4SubgraphUrlOverride(ChainId.SEPOLIA)
     ),
   },
-]
+] : []
