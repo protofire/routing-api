@@ -14,6 +14,7 @@ import {
   DAI_SEPOLIA,
   log,
   NodeJSCache,
+  USDC_ABSTRACT_TESTNET,
   USDC_ARBITRUM,
   USDC_AVAX,
   USDC_BASE,
@@ -138,6 +139,8 @@ export const USDC_ON = (chainId: ChainId): Token => {
       return USDC_ZORA
     case ChainId.ZKSYNC:
       return USDCE_ZKSYNC
+    case ChainId.ABSTRACT_TESTNET:
+      return USDC_ABSTRACT_TESTNET
     default:
       throw new Error(`Chain id: ${chainId} not supported`)
   }

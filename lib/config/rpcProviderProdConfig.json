@@ -95,5 +95,13 @@
     "healthCheckSampleProb": 0.01,
     "providerInitialWeights": [1],
     "providerUrls": ["QUICKNODE_324"]
+  },
+  {
+    "chainId": 11124,
+    "useMultiProviderProb": 1,
+    "latencyEvaluationSampleProb": 0.01,
+    "healthCheckSampleProb": 0.01,
+    "providerInitialWeights": [1],
+    "providerUrls": ["WEB3_RPC_11124"]
   }
 ]

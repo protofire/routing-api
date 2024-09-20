@@ -234,6 +234,8 @@ export class RoutingAPIPipeline extends Stack {
       // ZkSync
       'QUICKNODE_324',
       'ALCHEMY_324',
+      // Abstract testnet
+      'WEB3_RPC_11124'
     ]
     for (const provider of RPC_GATEWAY_PROVIDERS) {
       jsonRpcProviders[provider] = jsonRpcProvidersSecret.secretValueFromJson(provider).toString()

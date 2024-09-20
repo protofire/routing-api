@@ -84,6 +84,7 @@ export const DEFAULT_ROUTING_CONFIG_BY_CHAIN = (chainId: ChainId): AlphaRouterCo
         forceCrossProtocol: false,
       }
     case ChainId.ZKSYNC:
+    case ChainId.ABSTRACT_TESTNET:
       return {
         v2PoolSelection: {
           topN: 3,
