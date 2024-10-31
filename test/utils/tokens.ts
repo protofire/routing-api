@@ -27,6 +27,7 @@ import {
   USDC_POLYGON,
   USDC_POLYGON_MUMBAI,
   USDC_SEPOLIA,
+  USDC_ZERO,
   USDC_ZORA,
   USDCE_ZKSYNC,
   USDT_ARBITRUM,
@@ -141,6 +142,8 @@ export const USDC_ON = (chainId: ChainId): Token => {
       return USDCE_ZKSYNC
     case ChainId.ABSTRACT_TESTNET:
       return USDC_ABSTRACT_TESTNET
+    case ChainId.ZERO:
+      return USDC_ZERO
     default:
       throw new Error(`Chain id: ${chainId} not supported`)
   }
