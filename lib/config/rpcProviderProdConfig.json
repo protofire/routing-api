@@ -62,7 +62,7 @@
     "latencyEvaluationSampleProb": 0.05,
     "healthCheckSampleProb": 0.0005,
     "providerInitialWeights": [1],
-    "providerUrls": ["QUICKNODE_8453"]
+    "providerUrls": ["WEB3_RPC_GATEWAY_8453"]
   },
   {
     "chainId": 1,

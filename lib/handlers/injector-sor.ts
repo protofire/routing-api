@@ -96,10 +96,10 @@ export const SUPPORTED_CHAINS: ChainId[] = [
   // ChainId.CELO_ALFAJORES,
   // ChainId.BNB,
   // ChainId.AVALANCHE,
-  // ChainId.BASE,
   // ChainId.BLAST,
   // ChainId.ZORA,
   // ChainId.ZKSYNC,
+  ChainId.BASE,
   ChainId.ABSTRACT_TESTNET,
   ChainId.ZERO,
 ]
