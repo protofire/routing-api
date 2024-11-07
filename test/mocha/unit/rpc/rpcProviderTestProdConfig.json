@@ -45,7 +45,7 @@
     "chainId": 8453,
     "useMultiProviderProb": 1,
     "providerInitialWeights": [1, 0, 0, 0],
-    "providerUrls": ["QUICKNODE_8453", "INFURA_8453", "ALCHEMY_8453", "NIRVANA_8453"]
+    "providerUrls": ["WEB3_RPC_GATEWAY_8453", "INFURA_8453", "ALCHEMY_8453", "NIRVANA_8453"]
   },
   {
     "chainId": 1,

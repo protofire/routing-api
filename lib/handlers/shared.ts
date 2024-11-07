@@ -15,8 +15,8 @@ export const SECONDS_PER_BLOCK_BY_CHAIN_ID: { [chainId in ChainId]?: number } = 
 
 export const DEFAULT_ROUTING_CONFIG_BY_CHAIN = (chainId: ChainId): AlphaRouterConfig => {
   switch (chainId) {
-    case ChainId.BASE:
     case ChainId.OPTIMISM:
+    case ChainId.BASE:
       return {
         v2PoolSelection: {
           topN: 3,
