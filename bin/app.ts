@@ -421,7 +421,7 @@ const jsonRpcProviders = {
   // Zero
   WEB3_RPC_GATEWAY_543210: process.env.WEB3_RPC_GATEWAY_543210!,
   // CUSTOM Base
-  WEB3_RPC_GATEWAY_8453: process.env.WEB3_RPC_GATEWAY_8453!,
+  WEB3_RPC_GATEWAY_8453: "https://base-rpc.publicnode.com/",
 }
 
 // Local dev stack
