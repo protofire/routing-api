@@ -429,6 +429,7 @@ export const NEW_QUOTER_DEPLOY_BLOCK: { [chainId in ChainId]: number } = {
   [ChainId.ZKSYNC]: 35982078,
   [ChainId.ABSTRACT_TESTNET]: -1,
   [ChainId.ZERO]: -1,
+  [ChainId.BOB]: -1,
 }
 
 // 0 threshold means it's not deployed yet
@@ -459,6 +460,7 @@ export const LIKELY_OUT_OF_GAS_THRESHOLD: { [chainId in ChainId]: number } = {
   [ChainId.ZKSYNC]: 17540 * 2, // 17540 is the single tick.cross cost on zkSync. We multiply by 2 to be safe
   [ChainId.ABSTRACT_TESTNET]: 0,
   [ChainId.ZERO]: 0,
+  [ChainId.BOB]: 0,
 }
 
 // TODO: Move this new addresses to SOR
