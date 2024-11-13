@@ -96,7 +96,7 @@ index 3bbaa7b..5fe87ef 100644
 +  543210: /*#__PURE__*/new Token(543210, '0xAc98B49576B1C892ba6BFae08fE1BB0d80Cf599c', 18, 'WETH', 'Wrapped Ether'),
 +  60808: /*#__PURE__*/new Token(543210, '0x4200000000000000000000000000000000000006', 18, 'WETH', 'Wrapped Ether')
  };
-
+ 
  /**
 diff --git a/node_modules/@uniswap/sdk-core/dist/sdk-core.cjs.development.js.map b/node_modules/@uniswap/sdk-core/dist/sdk-core.cjs.development.js.map
 index d4d9bcc..1f92ea3 100644
@@ -203,7 +203,7 @@ index 7a5284e..5362dd0 100644
 +  543210: /*#__PURE__*/new Token(543210, '0xAc98B49576B1C892ba6BFae08fE1BB0d80Cf599c', 18, 'WETH', 'Wrapped Ether'),
 +  60808: /*#__PURE__*/new Token(543210, '0x4200000000000000000000000000000000000006', 18, 'WETH', 'Wrapped Ether')
  };
-
+ 
  /**
 diff --git a/node_modules/@uniswap/sdk-core/dist/sdk-core.esm.js.map b/node_modules/@uniswap/sdk-core/dist/sdk-core.esm.js.map
 index 4a959cf..22dd10c 100644

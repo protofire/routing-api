@@ -5,7 +5,7 @@ index a7cdef8..94d6b2a 100644
 @@ -210,7 +210,7 @@ function createCommand(type, parameters) {
    };
  }
-
+ 
 -var _routerConfigs, _routerConfigs2, _routerConfigs3, _routerConfigs4, _routerConfigs5, _routerConfigs6, _routerConfigs7, _routerConfigs8, _routerConfigs9, _routerConfigs10, _routerConfigs11, _routerConfigs12, _routerConfigs13, _routerConfigs14, _routerConfigs15, _routerConfigs16, _routerConfigs17, _routerConfigs18, _CHAIN_CONFIGS;
 +var _routerConfigs, _routerConfigs2, _routerConfigs3, _routerConfigs4, _routerConfigs5, _routerConfigs6, _routerConfigs7, _routerConfigs8, _routerConfigs9, _routerConfigs10, _routerConfigs11, _routerConfigs12, _routerConfigs13, _routerConfigs14, _routerConfigs15, _routerConfigs16, _routerConfigs17, _routerConfigs18, _routerConfigs19, _routerConfigs20, _CHAIN_CONFIGS;
  (function (UniversalRouterVersion) {
@@ -69,7 +69,7 @@ index 53a5591..1e924f6 100644
 @@ -213,7 +213,7 @@ function createCommand(type, parameters) {
    };
  }
-
+ 
 -var _routerConfigs, _routerConfigs2, _routerConfigs3, _routerConfigs4, _routerConfigs5, _routerConfigs6, _routerConfigs7, _routerConfigs8, _routerConfigs9, _routerConfigs10, _routerConfigs11, _routerConfigs12, _routerConfigs13, _routerConfigs14, _routerConfigs15, _routerConfigs16, _routerConfigs17, _routerConfigs18, _CHAIN_CONFIGS;
 +var _routerConfigs, _routerConfigs2, _routerConfigs3, _routerConfigs4, _routerConfigs5, _routerConfigs6, _routerConfigs7, _routerConfigs8, _routerConfigs9, _routerConfigs10, _routerConfigs11, _routerConfigs12, _routerConfigs13, _routerConfigs14, _routerConfigs15, _routerConfigs16, _routerConfigs17, _routerConfigs18, _routerConfigs19, _routerConfigs20, _CHAIN_CONFIGS;
  var UniversalRouterVersion;
