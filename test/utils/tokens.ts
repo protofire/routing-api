@@ -20,6 +20,7 @@ import {
   USDC_BASE,
   USDC_BASE_GOERLI,
   USDC_BNB,
+  USDC_BOB,
   USDC_GOERLI,
   USDC_MAINNET,
   USDC_OPTIMISM,
@@ -144,6 +145,8 @@ export const USDC_ON = (chainId: ChainId): Token => {
       return USDC_ABSTRACT_TESTNET
     case ChainId.ZERO:
       return USDC_ZERO
+    case ChainId.BOB:
+      return USDC_BOB
     default:
       throw new Error(`Chain id: ${chainId} not supported`)
   }
