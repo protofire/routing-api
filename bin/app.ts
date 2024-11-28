@@ -242,6 +242,8 @@ export class RoutingAPIPipeline extends Stack {
       'WEB3_RPC_GATEWAY_8453',
       // BOB
       'WEB3_RPC_GATEWAY_60808',
+      // CYBER
+      'WEB3_RPC_GATEWAY_7560',
     ]
     for (const provider of RPC_GATEWAY_PROVIDERS) {
       jsonRpcProviders[provider] = jsonRpcProvidersSecret.secretValueFromJson(provider).toString()
@@ -374,6 +376,7 @@ const jsonRpcProviders = {
   WEB3_RPC_11124: process.env.WEB3_RPC_11124!,
   WEB3_RPC_543210: process.env.WEB3_RPC_543210!,
   WEB3_RPC_60808: process.env.WEB3_RPC_60808!,
+  WEB3_RPC_7560: process.env.WEB3_RPC_7560!,
   // The followings are for RPC Gateway
   // Optimism
   // INFURA_10: process.env.INFURA_10!,
@@ -427,6 +430,8 @@ const jsonRpcProviders = {
   WEB3_RPC_GATEWAY_8453: process.env.WEB3_RPC_GATEWAY_8453!,
   // BOB
   WEB3_RPC_GATEWAY_60808: process.env.WEB3_RPC_GATEWAY_60808!,
+  // CYBER
+  WEB3_RPC_GATEWAY_7560: process.env.WEB3_RPC_GATEWAY_7560!,
 }
 
 // Local dev stack
