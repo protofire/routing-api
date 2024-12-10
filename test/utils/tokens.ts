@@ -29,6 +29,7 @@ import {
   USDC_POLYGON,
   USDC_POLYGON_MUMBAI,
   USDC_SEPOLIA,
+  USDC_SHAPE,
   USDC_ZERO,
   USDC_ZORA,
   USDCE_ZKSYNC,
@@ -150,6 +151,8 @@ export const USDC_ON = (chainId: ChainId): Token => {
       return USDC_BOB
     case ChainId.CYBER:
       return USDC_CYBER
+    case ChainId.SHAPE:
+      return USDC_SHAPE
     default:
       throw new Error(`Chain id: ${chainId} not supported`)
   }
