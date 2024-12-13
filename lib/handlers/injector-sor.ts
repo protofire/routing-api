@@ -473,8 +473,8 @@ export abstract class InjectorSOR<Router, QueryParams> extends Injector<
             ChainId.BLAST,
             ChainId.ABSTRACT_TESTNET,
             ChainId.ZERO,
-            ChainId.BOB,
             ChainId.CYBER,
+            ChainId.SHAPE,
           ]
 
           const v4Supported = [ChainId.SEPOLIA]
