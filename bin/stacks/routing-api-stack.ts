@@ -1,4 +1,4 @@
-import { SUPPORTED_CHAINS } from '@uniswap/smart-order-router'
+// import { SUPPORTED_CHAINS } from '@uniswap/smart-order-router'
 import * as cdk from 'aws-cdk-lib'
 import { ChainId } from '@uniswap/sdk-core'
 import { CfnOutput, Duration } from 'aws-cdk-lib'
@@ -20,8 +20,9 @@ import { RpcGatewayDashboardStack } from './rpc-gateway-dashboard'
 import { REQUEST_SOURCES } from '../../lib/util/requestSources'
 import { TESTNETS } from '../../lib/util/testNets'
 import { RpcGatewayFallbackStack } from './rpc-gateway-fallback-stack'
+import { alarmConfig } from '../app'
 
-export const CHAINS_NOT_MONITORED: ChainId[] = TESTNETS
+export const CHAINS_NOT_MONITORED: ChainId[] = TESTNETS 
 export const REQUEST_SOURCES_NOT_MONITORED = ['unknown']
 
 export class RoutingAPIStack extends cdk.Stack {
@@ -396,7 +397,7 @@ export class RoutingAPIStack extends cdk.Stack {
 
     // Alarms for high 400 error rate for each chain
     const percent4XXByChainAlarm: cdk.aws_cloudwatch.Alarm[] = []
-    SUPPORTED_CHAINS.forEach((chainId) => {
+    alarmConfig.chainsMonitored.forEach((chainId) => {
       if (CHAINS_NOT_MONITORED.includes(chainId)) {
         return
       }
@@ -433,7 +434,7 @@ export class RoutingAPIStack extends cdk.Stack {
 
     // Alarms for high 500 error rate for each chain
     const successRateByChainAlarm: cdk.aws_cloudwatch.Alarm[] = []
-    SUPPORTED_CHAINS.forEach((chainId) => {
+    alarmConfig.chainsMonitored.forEach((chainId) => {
       if (CHAINS_NOT_MONITORED.includes(chainId)) {
         return
       }
@@ -524,7 +525,7 @@ export class RoutingAPIStack extends cdk.Stack {
         return
       }
 
-      SUPPORTED_CHAINS.forEach((chainId) => {
+      alarmConfig.chainsMonitored.forEach((chainId) => {
         if (CHAINS_NOT_MONITORED.includes(chainId)) {
           return
         }
