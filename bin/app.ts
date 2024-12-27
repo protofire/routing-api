@@ -236,6 +236,8 @@ export class RoutingAPIPipeline extends Stack {
       'ALCHEMY_324',
       // Abstract testnet
       'WEB3_RPC_GATEWAY_11124',
+      // Abstract mainnet
+      'WEB3_RPC_GATEWAY_2741',
       // Zero
       'WEB3_RPC_GATEWAY_543210',
       // CUSTOM Base
@@ -388,6 +390,7 @@ const jsonRpcProviders = {
   WEB3_RPC_57073: process.env.WEB3_RPC_57073!,
   WEB3_RPC_690: process.env.WEB3_RPC_690!,
   WEB3_RPC_17069: process.env.WEB3_RPC_17069!,
+  WEB3_RPC_2741: process.env.WEB3_RPC_2741!,
   // The followings are for RPC Gateway
   // Optimism
   // INFURA_10: process.env.INFURA_10!,
@@ -435,6 +438,7 @@ const jsonRpcProviders = {
   ALCHEMY_324: process.env.ALCHEMY_324!,
   // Abstract
   WEB3_RPC_GATEWAY_11124: process.env.WEB3_RPC_GATEWAY_11124!,
+  WEB3_RPC_GATEWAY_2741: process.env.WEB3_RPC_GATEWAY_2741!,
   // Zero
   WEB3_RPC_GATEWAY_543210: process.env.WEB3_RPC_GATEWAY_543210!,
   // CUSTOM Base

@@ -14,6 +14,7 @@ import {
   DAI_SEPOLIA,
   log,
   NodeJSCache,
+  USDC_ABSTRACT_MAINNET,
   USDC_ABSTRACT_TESTNET,
   USDC_ARBITRUM,
   USDC_AVAX,
@@ -162,6 +163,8 @@ export const USDC_ON = (chainId: ChainId): Token => {
       return USDC_REDSTONE
     case ChainId.REDSTONE_GARNET:
       return USDC_REDSTONE_GARNET
+    case ChainId.ABSTRACT_MAINNET:
+      return USDC_ABSTRACT_MAINNET
     default:
       throw new Error(`Chain id: ${chainId} not supported`)
   }

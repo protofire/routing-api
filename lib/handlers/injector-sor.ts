@@ -107,7 +107,8 @@ export const SUPPORTED_CHAINS: ChainId[] = [
   ChainId.SHAPE,
   ChainId.INK,
   ChainId.REDSTONE,
-  ChainId.REDSTONE_GARNET,  
+  ChainId.REDSTONE_GARNET,
+  ChainId.ABSTRACT_MAINNET,
 ]
 const DEFAULT_TOKEN_LIST = 'https://gateway.ipfs.io/ipns/tokens.uniswap.org'
 
@@ -363,6 +364,7 @@ export abstract class InjectorSOR<Router, QueryParams> extends Injector<
             case ChainId.INK:
             case ChainId.REDSTONE:
             case ChainId.REDSTONE_GARNET:
+            case ChainId.ABSTRACT_MAINNET:
               const currentQuoteProvider = new OnChainQuoteProvider(
                 chainId,
                 provider,
@@ -484,6 +486,7 @@ export abstract class InjectorSOR<Router, QueryParams> extends Injector<
             ChainId.INK,
             ChainId.REDSTONE,
             ChainId.REDSTONE_GARNET,
+            ChainId.ABSTRACT_MAINNET,
           ]
 
           const v4Supported = [ChainId.SEPOLIA]

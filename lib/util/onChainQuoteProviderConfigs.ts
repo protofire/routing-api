@@ -435,6 +435,7 @@ export const NEW_QUOTER_DEPLOY_BLOCK: { [chainId in ChainId]: number } = {
   [ChainId.INK]: -1,
   [ChainId.REDSTONE]: -1,
   [ChainId.REDSTONE_GARNET]: -1,
+  [ChainId.ABSTRACT_MAINNET]: -1,
 }
 
 // 0 threshold means it's not deployed yet
@@ -471,6 +472,7 @@ export const LIKELY_OUT_OF_GAS_THRESHOLD: { [chainId in ChainId]: number } = {
   [ChainId.INK]: 0,
   [ChainId.REDSTONE]: 0,
   [ChainId.REDSTONE_GARNET]: 0,
+  [ChainId.ABSTRACT_MAINNET]: 0,
 }
 
 // TODO: Move this new addresses to SOR
