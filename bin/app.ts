@@ -253,6 +253,8 @@ export class RoutingAPIPipeline extends Stack {
       // REDSTONE
       'WEB3_RPC_GATEWAY_690',
       'WEB3_RPC_GATEWAY_17069',
+      // ANIME TESTNET
+      'WEB3_RPC_GATEWAY_6900',
     ]
     for (const provider of RPC_GATEWAY_PROVIDERS) {
       jsonRpcProviders[provider] = jsonRpcProvidersSecret.secretValueFromJson(provider).toString()
@@ -391,6 +393,7 @@ const jsonRpcProviders = {
   WEB3_RPC_690: process.env.WEB3_RPC_690!,
   WEB3_RPC_17069: process.env.WEB3_RPC_17069!,
   WEB3_RPC_2741: process.env.WEB3_RPC_2741!,
+  WEB3_RPC_6900: process.env.WEB3_RPC_6900!,
   // The followings are for RPC Gateway
   // Optimism
   // INFURA_10: process.env.INFURA_10!,
@@ -454,6 +457,8 @@ const jsonRpcProviders = {
   // REDSTONE
   WEB3_RPC_GATEWAY_690: process.env.WEB3_RPC_GATEWAY_690!,
   WEB3_RPC_GATEWAY_17069: process.env.WEB3_RPC_GATEWAY_17069!,
+  // ANIME TESTNET
+  WEB3_RPC_GATEWAY_6900: process.env.WEB3_RPC_GATEWAY_6900!,
 }
 
 // Local dev stack

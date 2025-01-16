@@ -167,5 +167,13 @@
     "healthCheckSampleProb": 0.01,
     "providerInitialWeights": [1],
     "providerUrls": ["WEB3_RPC_GATEWAY_2741"]
+  },
+  {
+    "chainId": 6900,
+    "useMultiProviderProb": 1,
+    "latencyEvaluationSampleProb": 0.01,
+    "healthCheckSampleProb": 0.01,
+    "providerInitialWeights": [1],
+    "providerUrls": ["WEB3_RPC_GATEWAY_6900"]
   }
 ]
