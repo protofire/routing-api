@@ -397,83 +397,83 @@ export class RoutingAPIStack extends cdk.Stack {
 
     // Alarms for high 400 error rate for each chain
     const percent4XXByChainAlarm: cdk.aws_cloudwatch.Alarm[] = []
-    alarmConfig.chainsMonitored && alarmConfig.chainsMonitored.forEach((chainId) => {
-      if (CHAINS_NOT_MONITORED.includes(chainId)) {
-        return
-      }
-      const alarmName = `RoutingAPI-SEV3-4XXAlarm-ChainId: ${chainId.toString()}`
-      // We only want to alert if the volume is high enough over default period (5m) for 4xx errors (no route).
-      const invocationsThreshold = 500
-      const metric = new MathExpression({
-        expression: `IF(invocations > ${invocationsThreshold}, 100*(response400/invocations), 0)`,
-        usingMetrics: {
-          invocations: new aws_cloudwatch.Metric({
-            namespace: 'Uniswap',
-            metricName: `GET_QUOTE_REQUESTED_CHAINID: ${chainId.toString()}`,
-            dimensionsMap: { Service: 'RoutingAPI' },
-            unit: aws_cloudwatch.Unit.COUNT,
-            statistic: 'sum',
-          }),
-          response400: new aws_cloudwatch.Metric({
-            namespace: 'Uniswap',
-            metricName: `GET_QUOTE_400_CHAINID: ${chainId.toString()}`,
-            dimensionsMap: { Service: 'RoutingAPI' },
-            unit: aws_cloudwatch.Unit.COUNT,
-            statistic: 'sum',
-          }),
-        },
-      })
-      const alarm = new aws_cloudwatch.Alarm(this, alarmName, {
-        alarmName,
-        metric,
-        threshold: 80,
-        evaluationPeriods: 2,
-      })
-      percent4XXByChainAlarm.push(alarm)
-    })
+    // alarmConfig.chainsMonitored && alarmConfig.chainsMonitored.forEach((chainId) => {
+    //   if (CHAINS_NOT_MONITORED.includes(chainId)) {
+    //     return
+    //   }
+    //   const alarmName = `RoutingAPI-SEV3-4XXAlarm-ChainId: ${chainId.toString()}`
+    //   // We only want to alert if the volume is high enough over default period (5m) for 4xx errors (no route).
+    //   const invocationsThreshold = 500
+    //   const metric = new MathExpression({
+    //     expression: `IF(invocations > ${invocationsThreshold}, 100*(response400/invocations), 0)`,
+    //     usingMetrics: {
+    //       invocations: new aws_cloudwatch.Metric({
+    //         namespace: 'Uniswap',
+    //         metricName: `GET_QUOTE_REQUESTED_CHAINID: ${chainId.toString()}`,
+    //         dimensionsMap: { Service: 'RoutingAPI' },
+    //         unit: aws_cloudwatch.Unit.COUNT,
+    //         statistic: 'sum',
+    //       }),
+    //       response400: new aws_cloudwatch.Metric({
+    //         namespace: 'Uniswap',
+    //         metricName: `GET_QUOTE_400_CHAINID: ${chainId.toString()}`,
+    //         dimensionsMap: { Service: 'RoutingAPI' },
+    //         unit: aws_cloudwatch.Unit.COUNT,
+    //         statistic: 'sum',
+    //       }),
+    //     },
+    //   })
+    //   const alarm = new aws_cloudwatch.Alarm(this, alarmName, {
+    //     alarmName,
+    //     metric,
+    //     threshold: 80,
+    //     evaluationPeriods: 2,
+    //   })
+    //   percent4XXByChainAlarm.push(alarm)
+    // })
 
     // Alarms for high 500 error rate for each chain
     const successRateByChainAlarm: cdk.aws_cloudwatch.Alarm[] = []
-    alarmConfig.chainsMonitored && alarmConfig.chainsMonitored.forEach((chainId) => {
-      if (CHAINS_NOT_MONITORED.includes(chainId)) {
-        return
-      }
-      const alarmName = `RoutingAPI-SEV2-SuccessRate-Alarm-ChainId: ${chainId.toString()}`
-      const metric = new MathExpression({
-        expression: '100*(response200/(invocations-response400))',
-        usingMetrics: {
-          invocations: new aws_cloudwatch.Metric({
-            namespace: 'Uniswap',
-            metricName: `GET_QUOTE_REQUESTED_CHAINID: ${chainId.toString()}`,
-            dimensionsMap: { Service: 'RoutingAPI' },
-            unit: aws_cloudwatch.Unit.COUNT,
-            statistic: 'sum',
-          }),
-          response400: new aws_cloudwatch.Metric({
-            namespace: 'Uniswap',
-            metricName: `GET_QUOTE_400_CHAINID: ${chainId.toString()}`,
-            dimensionsMap: { Service: 'RoutingAPI' },
-            unit: aws_cloudwatch.Unit.COUNT,
-            statistic: 'sum',
-          }),
-          response200: new aws_cloudwatch.Metric({
-            namespace: 'Uniswap',
-            metricName: `GET_QUOTE_200_CHAINID: ${chainId.toString()}`,
-            dimensionsMap: { Service: 'RoutingAPI' },
-            unit: aws_cloudwatch.Unit.COUNT,
-            statistic: 'sum',
-          }),
-        },
-      })
-      const alarm = new aws_cloudwatch.Alarm(this, alarmName, {
-        alarmName,
-        metric,
-        comparisonOperator: ComparisonOperator.LESS_THAN_OR_EQUAL_TO_THRESHOLD,
-        threshold: 95, // This is alarm will trigger if the SR is less than or equal to 95%
-        evaluationPeriods: 2,
-      })
-      successRateByChainAlarm.push(alarm)
-    })
+    // alarmConfig.chainsMonitored && alarmConfig.chainsMonitored.forEach((chainId) => {
+    //   if (CHAINS_NOT_MONITORED.includes(chainId)) {
+    //     return
+    //   }
+    //   const alarmName = `RoutingAPI-SEV2-SuccessRate-Alarm-ChainId: ${chainId.toString()}`
+    //   const metric = new MathExpression({
+    //     expression: '100*(response200/(invocations-response400))',
+    //     usingMetrics: {
+    //       invocations: new aws_cloudwatch.Metric({
+    //         namespace: 'Uniswap',
+    //         metricName: `GET_QUOTE_REQUESTED_CHAINID: ${chainId.toString()}`,
+    //         dimensionsMap: { Service: 'RoutingAPI' },
+    //         unit: aws_cloudwatch.Unit.COUNT,
+    //         statistic: 'sum',
+    //       }),
+    //       response400: new aws_cloudwatch.Metric({
+    //         namespace: 'Uniswap',
+    //         metricName: `GET_QUOTE_400_CHAINID: ${chainId.toString()}`,
+    //         dimensionsMap: { Service: 'RoutingAPI' },
+    //         unit: aws_cloudwatch.Unit.COUNT,
+    //         statistic: 'sum',
+    //       }),
+    //       response200: new aws_cloudwatch.Metric({
+    //         namespace: 'Uniswap',
+    //         metricName: `GET_QUOTE_200_CHAINID: ${chainId.toString()}`,
+    //         dimensionsMap: { Service: 'RoutingAPI' },
+    //         unit: aws_cloudwatch.Unit.COUNT,
+    //         statistic: 'sum',
+    //       }),
+    //     },
+    //   })
+    //   const alarm = new aws_cloudwatch.Alarm(this, alarmName, {
+    //     alarmName,
+    //     metric,
+    //     comparisonOperator: ComparisonOperator.LESS_THAN_OR_EQUAL_TO_THRESHOLD,
+    //     threshold: 95, // This is alarm will trigger if the SR is less than or equal to 95%
+    //     evaluationPeriods: 2,
+    //   })
+    //   successRateByChainAlarm.push(alarm)
+    // })
 
     // Alarms for high 500 error rate for each request source
     const successRateByRequestSourceAlarm: cdk.aws_cloudwatch.Alarm[] = []
@@ -525,46 +525,46 @@ export class RoutingAPIStack extends cdk.Stack {
         return
       }
 
-      alarmConfig.chainsMonitored && alarmConfig.chainsMonitored.forEach((chainId) => {
-        if (CHAINS_NOT_MONITORED.includes(chainId)) {
-          return
-        }
-        const alarmName = `RoutingAPI-SEV3-SuccessRate-Alarm-RequestSource-ChainId: ${requestSource.toString()} ${chainId}`
-        const metric = new MathExpression({
-          expression: '100*(response200/(invocations-response400))',
-          usingMetrics: {
-            invocations: new aws_cloudwatch.Metric({
-              namespace: 'Uniswap',
-              metricName: `GET_QUOTE_REQUEST_SOURCE_AND_CHAINID: ${requestSource.toString()} ${chainId}`,
-              dimensionsMap: { Service: 'RoutingAPI' },
-              unit: aws_cloudwatch.Unit.COUNT,
-              statistic: 'sum',
-            }),
-            response400: new aws_cloudwatch.Metric({
-              namespace: 'Uniswap',
-              metricName: `GET_QUOTE_400_REQUEST_SOURCE_AND_CHAINID: ${requestSource.toString()} ${chainId}`,
-              dimensionsMap: { Service: 'RoutingAPI' },
-              unit: aws_cloudwatch.Unit.COUNT,
-              statistic: 'sum',
-            }),
-            response200: new aws_cloudwatch.Metric({
-              namespace: 'Uniswap',
-              metricName: `GET_QUOTE_200_REQUEST_SOURCE_AND_CHAINID: ${requestSource.toString()} ${chainId}`,
-              dimensionsMap: { Service: 'RoutingAPI' },
-              unit: aws_cloudwatch.Unit.COUNT,
-              statistic: 'sum',
-            }),
-          },
-        })
-        const alarm = new aws_cloudwatch.Alarm(this, alarmName, {
-          alarmName,
-          metric,
-          comparisonOperator: ComparisonOperator.LESS_THAN_OR_EQUAL_TO_THRESHOLD,
-          threshold: 95, // This is alarm will trigger if the SR is less than or equal to 95%
-          evaluationPeriods: 2,
-        })
-        successRateByRequestSourceAndChainIdAlarm.push(alarm)
-      })
+      // alarmConfig.chainsMonitored && alarmConfig.chainsMonitored.forEach((chainId) => {
+      //   if (CHAINS_NOT_MONITORED.includes(chainId)) {
+      //     return
+      //   }
+      //   const alarmName = `RoutingAPI-SEV3-SuccessRate-Alarm-RequestSource-ChainId: ${requestSource.toString()} ${chainId}`
+      //   const metric = new MathExpression({
+      //     expression: '100*(response200/(invocations-response400))',
+      //     usingMetrics: {
+      //       invocations: new aws_cloudwatch.Metric({
+      //         namespace: 'Uniswap',
+      //         metricName: `GET_QUOTE_REQUEST_SOURCE_AND_CHAINID: ${requestSource.toString()} ${chainId}`,
+      //         dimensionsMap: { Service: 'RoutingAPI' },
+      //         unit: aws_cloudwatch.Unit.COUNT,
+      //         statistic: 'sum',
+      //       }),
+      //       response400: new aws_cloudwatch.Metric({
+      //         namespace: 'Uniswap',
+      //         metricName: `GET_QUOTE_400_REQUEST_SOURCE_AND_CHAINID: ${requestSource.toString()} ${chainId}`,
+      //         dimensionsMap: { Service: 'RoutingAPI' },
+      //         unit: aws_cloudwatch.Unit.COUNT,
+      //         statistic: 'sum',
+      //       }),
+      //       response200: new aws_cloudwatch.Metric({
+      //         namespace: 'Uniswap',
+      //         metricName: `GET_QUOTE_200_REQUEST_SOURCE_AND_CHAINID: ${requestSource.toString()} ${chainId}`,
+      //         dimensionsMap: { Service: 'RoutingAPI' },
+      //         unit: aws_cloudwatch.Unit.COUNT,
+      //         statistic: 'sum',
+      //       }),
+      //     },
+      //   })
+      //   const alarm = new aws_cloudwatch.Alarm(this, alarmName, {
+      //     alarmName,
+      //     metric,
+      //     comparisonOperator: ComparisonOperator.LESS_THAN_OR_EQUAL_TO_THRESHOLD,
+      //     threshold: 95, // This is alarm will trigger if the SR is less than or equal to 95%
+      //     evaluationPeriods: 2,
+      //   })
+      //   successRateByRequestSourceAndChainIdAlarm.push(alarm)
+      // })
     })
 
     if (chatbotSNSArn) {
