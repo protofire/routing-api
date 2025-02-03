@@ -111,7 +111,7 @@ export const SUPPORTED_CHAINS: ChainId[] = [
   ChainId.ABSTRACT_MAINNET,
   ChainId.ANIME_TESTNET,
 ]
-const DEFAULT_TOKEN_LIST = 'https://gateway.ipfs.io/ipns/tokens.uniswap.org'
+const DEFAULT_TOKEN_LIST = 'https://api-abstract.reservoir.tools/tokenlist/v1'
 
 export interface RequestInjected<Router> extends BaseRInj {
   chainId: ChainId
