@@ -483,13 +483,13 @@ new RoutingAPIStack(app, 'RoutingAPIStack', {
   uniGraphQLHeaderOrigin: process.env.GQL_H_ORGN!,
 })
 
-export const alarmConfig = {
-  chainsMonitored: process.env.CHAINS_MONITORED
-  ? process.env.CHAINS_MONITORED.split(',')
-      .map((id) => Number(id) as ChainId)
-      .filter((id): id is ChainId => !!id)
-  : [],
-}
+// export const alarmConfig = {
+//   chainsMonitored: process.env.CHAINS_MONITORED
+//   ? process.env.CHAINS_MONITORED.split(',')
+//       .map((id) => Number(id) as ChainId)
+//       .filter((id): id is ChainId => !!id)
+//   : [],
+// }
 
 new RoutingAPIPipeline(app, 'RoutingAPIPipelineStack', {
   env: { account: '644039819003', region: 'us-east-2' },
