@@ -25,6 +25,7 @@ import { RpcGatewayFallbackStack } from './rpc-gateway-fallback-stack'
 export const CHAINS_NOT_MONITORED: ChainId[] = TESTNETS 
 export const REQUEST_SOURCES_NOT_MONITORED = ['unknown']
 const DISABLE_CHATBOT = true
+const DISABLE_ANY_SOURCE = true
 
 export class RoutingAPIStack extends cdk.Stack {
   public readonly url: CfnOutput
@@ -479,7 +480,7 @@ export class RoutingAPIStack extends cdk.Stack {
     // Alarms for high 500 error rate for each request source
     const successRateByRequestSourceAlarm: cdk.aws_cloudwatch.Alarm[] = []
     REQUEST_SOURCES.forEach((requestSource) => {
-      if (REQUEST_SOURCES_NOT_MONITORED.includes(requestSource)) {
+      if (REQUEST_SOURCES_NOT_MONITORED.includes(requestSource) || DISABLE_ANY_SOURCE) {
         return
       }
       const alarmName = `RoutingAPI-SEV2-SuccessRate-Alarm-RequestSource: ${requestSource.toString()}`
@@ -522,7 +523,7 @@ export class RoutingAPIStack extends cdk.Stack {
     // Alarms for high 500 error rate for each request source and chain id
     const successRateByRequestSourceAndChainIdAlarm: cdk.aws_cloudwatch.Alarm[] = []
     REQUEST_SOURCES.forEach((requestSource) => {
-      if (REQUEST_SOURCES_NOT_MONITORED.includes(requestSource)) {
+      if (REQUEST_SOURCES_NOT_MONITORED.includes(requestSource) || DISABLE_ANY_SOURCE) {
         return
       }
 
