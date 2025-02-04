@@ -24,6 +24,7 @@ import { RpcGatewayFallbackStack } from './rpc-gateway-fallback-stack'
 
 export const CHAINS_NOT_MONITORED: ChainId[] = TESTNETS 
 export const REQUEST_SOURCES_NOT_MONITORED = ['unknown']
+const DISABLE_CHATBOT = true
 
 export class RoutingAPIStack extends cdk.Stack {
   public readonly url: CfnOutput
@@ -363,37 +364,37 @@ export class RoutingAPIStack extends cdk.Stack {
     // Create an alarm for when GraphQLTokenFeeFetcherFetchFeesFailure rate goes above 15%.
     // We do have on chain fallback in place of GQL failure, but we want to be alerted if the failure rate is high to take action.
     // For this reason we only alert on SEV3.
-    const graphqlTokenFeeFetcherErrorRateSev3 = new aws_cloudwatch.Alarm(
-      this,
-      'RoutingAPI-SEV3-GQLTokenFeeFetcherFailureRate',
-      {
-        alarmName: 'RoutingAPI-SEV3-GQLTokenFeeFetcherFailureRate',
-        metric: new MathExpression({
-          expression:
-            '100*(graphQLTokenFeeFetcherFetchFeesFailure/(graphQLTokenFeeFetcherFetchFeesSuccess+graphQLTokenFeeFetcherFetchFeesFailure))',
-          period: Duration.minutes(5),
-          usingMetrics: {
-            graphQLTokenFeeFetcherFetchFeesSuccess: new aws_cloudwatch.Metric({
-              namespace: 'Uniswap',
-              metricName: `GraphQLTokenFeeFetcherFetchFeesSuccess`,
-              dimensionsMap: { Service: 'RoutingAPI' },
-              unit: aws_cloudwatch.Unit.COUNT,
-              statistic: 'sum',
-            }),
-            graphQLTokenFeeFetcherFetchFeesFailure: new aws_cloudwatch.Metric({
-              namespace: 'Uniswap',
-              metricName: `GraphQLTokenFeeFetcherFetchFeesFailure`,
-              dimensionsMap: { Service: 'RoutingAPI' },
-              unit: aws_cloudwatch.Unit.COUNT,
-              statistic: 'sum',
-            }),
-          },
-        }),
-        threshold: 15,
-        evaluationPeriods: 3,
-        treatMissingData: aws_cloudwatch.TreatMissingData.NOT_BREACHING, // Missing data points are treated as "good" and within the threshold
-      }
-    )
+    // const graphqlTokenFeeFetcherErrorRateSev3 = new aws_cloudwatch.Alarm(
+    //   this,
+    //   'RoutingAPI-SEV3-GQLTokenFeeFetcherFailureRate',
+    //   {
+    //     alarmName: 'RoutingAPI-SEV3-GQLTokenFeeFetcherFailureRate',
+    //     metric: new MathExpression({
+    //       expression:
+    //         '100*(graphQLTokenFeeFetcherFetchFeesFailure/(graphQLTokenFeeFetcherFetchFeesSuccess+graphQLTokenFeeFetcherFetchFeesFailure))',
+    //       period: Duration.minutes(5),
+    //       usingMetrics: {
+    //         graphQLTokenFeeFetcherFetchFeesSuccess: new aws_cloudwatch.Metric({
+    //           namespace: 'Uniswap',
+    //           metricName: `GraphQLTokenFeeFetcherFetchFeesSuccess`,
+    //           dimensionsMap: { Service: 'RoutingAPI' },
+    //           unit: aws_cloudwatch.Unit.COUNT,
+    //           statistic: 'sum',
+    //         }),
+    //         graphQLTokenFeeFetcherFetchFeesFailure: new aws_cloudwatch.Metric({
+    //           namespace: 'Uniswap',
+    //           metricName: `GraphQLTokenFeeFetcherFetchFeesFailure`,
+    //           dimensionsMap: { Service: 'RoutingAPI' },
+    //           unit: aws_cloudwatch.Unit.COUNT,
+    //           statistic: 'sum',
+    //         }),
+    //       },
+    //     }),
+    //     threshold: 15,
+    //     evaluationPeriods: 3,
+    //     treatMissingData: aws_cloudwatch.TreatMissingData.NOT_BREACHING, // Missing data points are treated as "good" and within the threshold
+    //   }
+    // )
 
     // Alarms for high 400 error rate for each chain
     const percent4XXByChainAlarm: cdk.aws_cloudwatch.Alarm[] = []
@@ -567,7 +568,7 @@ export class RoutingAPIStack extends cdk.Stack {
       // })
     })
 
-    if (chatbotSNSArn) {
+    if (chatbotSNSArn && !DISABLE_CHATBOT) {
       const chatBotTopic = aws_sns.Topic.fromTopicArn(this, 'ChatbotTopic', chatbotSNSArn)
       apiAlarm5xxSev2.addAlarmAction(new aws_cloudwatch_actions.SnsAction(chatBotTopic))
       apiAlarm4xxSev2.addAlarmAction(new aws_cloudwatch_actions.SnsAction(chatBotTopic))
@@ -576,7 +577,7 @@ export class RoutingAPIStack extends cdk.Stack {
       apiAlarm4xxSev3.addAlarmAction(new aws_cloudwatch_actions.SnsAction(chatBotTopic))
       apiAlarmLatencySev3.addAlarmAction(new aws_cloudwatch_actions.SnsAction(chatBotTopic))
       simulationAlarmSev3.addAlarmAction(new aws_cloudwatch_actions.SnsAction(chatBotTopic))
-      graphqlTokenFeeFetcherErrorRateSev3.addAlarmAction(new aws_cloudwatch_actions.SnsAction(chatBotTopic))
+      // graphqlTokenFeeFetcherErrorRateSev3.addAlarmAction(new aws_cloudwatch_actions.SnsAction(chatBotTopic))
 
       percent4XXByChainAlarm.forEach((alarm) => {
         alarm.addAlarmAction(new aws_cloudwatch_actions.SnsAction(chatBotTopic))
