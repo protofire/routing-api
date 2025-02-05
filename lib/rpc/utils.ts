@@ -163,6 +163,9 @@ export function generateProviderUrl(key: string, value: string): string {
     case 'WEB3_RPC_GATEWAY_6900': {
       return tokens[0]
     }
+    case 'WEB3_RPC_GATEWAY_34443': {
+      return tokens[0]
+    }
   }
   throw new Error(`Unknown provider-chainId pair: ${key}`)
 }
