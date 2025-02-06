@@ -394,6 +394,7 @@ const jsonRpcProviders = {
   WEB3_RPC_17069: process.env.WEB3_RPC_17069!,
   WEB3_RPC_2741: process.env.WEB3_RPC_2741!,
   WEB3_RPC_6900: process.env.WEB3_RPC_6900!,
+  WEB3_RPC_34443: process.env.WEB3_RPC_34443!,
   // The followings are for RPC Gateway
   // Optimism
   // INFURA_10: process.env.INFURA_10!,
@@ -459,6 +460,8 @@ const jsonRpcProviders = {
   WEB3_RPC_GATEWAY_17069: process.env.WEB3_RPC_GATEWAY_17069!,
   // ANIME TESTNET
   WEB3_RPC_GATEWAY_6900: process.env.WEB3_RPC_GATEWAY_6900!,
+  // MODE
+  WEB3_RPC_GATEWAY_34443: process.env.WEB3_RPC_GATEWAY_34443!,
 }
 
 // Local dev stack
