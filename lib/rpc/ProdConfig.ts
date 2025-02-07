@@ -30,9 +30,11 @@ export const ProdConfigJoi = Joi.array().items(
   })
 )
 
+
+const DISABLE_ALARMS = true
 // Return a map of chain id and its provider names
 export function getRpcGatewayEnabledChains(config?: object): Map<ChainId, string[]> {
-  const prodConfigInput = config ?? PROD_CONFIG
+  const prodConfigInput = DISABLE_ALARMS ? [] : config ?? PROD_CONFIG
   const validation = ProdConfigJoi.validate(prodConfigInput)
   if (validation.error) {
     throw new Error(`ProdConfig failed data validation: Value: ${prodConfigInput}, Error: ${validation.error.message}`)
