@@ -109,6 +109,7 @@ export const SUPPORTED_CHAINS: ChainId[] = [
   ChainId.REDSTONE,
   ChainId.REDSTONE_GARNET,
   ChainId.ABSTRACT_MAINNET,
+  ChainId.ANIME,
   ChainId.ANIME_TESTNET,
   ChainId.MODE,
 ]
@@ -367,6 +368,7 @@ export abstract class InjectorSOR<Router, QueryParams> extends Injector<
             case ChainId.REDSTONE:
             case ChainId.REDSTONE_GARNET:
             case ChainId.ABSTRACT_MAINNET:
+            case ChainId.ANIME:
             case ChainId.ANIME_TESTNET:
             case ChainId.MODE:
               const currentQuoteProvider = new OnChainQuoteProvider(
@@ -491,6 +493,7 @@ export abstract class InjectorSOR<Router, QueryParams> extends Injector<
             ChainId.REDSTONE,
             ChainId.REDSTONE_GARNET,
             ChainId.ABSTRACT_MAINNET,
+            ChainId.ANIME,
             ChainId.ANIME_TESTNET,
             ChainId.MODE,
           ]

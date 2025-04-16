@@ -16,6 +16,7 @@ import {
   NodeJSCache,
   USDC_ABSTRACT_MAINNET,
   USDC_ABSTRACT_TESTNET,
+  USDC_ANIME,
   USDC_ANIME_TESTNET,
   USDC_ARBITRUM,
   USDC_AVAX,
@@ -171,6 +172,8 @@ export const USDC_ON = (chainId: ChainId): Token => {
       return USDC_ANIME_TESTNET
     case ChainId.MODE:
       return USDC_MODE
+    case ChainId.ANIME:
+      return USDC_ANIME
     default:
       throw new Error(`Chain id: ${chainId} not supported`)
   }
