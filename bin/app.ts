@@ -15,7 +15,7 @@ import { RoutingAPIStack } from './stacks/routing-api-stack'
 
 dotenv.config()
 // TODO: revert
-const SUPPORTED_CHAINS = [ChainId.SHAPE]
+const SUPPORTED_CHAINS = [ChainId.SHAPE, ChainId.ZERO, ChainId.ABSTRACT_MAINNET]
 
 export class RoutingAPIStage extends Stage {
   public readonly url: CfnOutput
