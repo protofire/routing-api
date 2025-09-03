@@ -87,31 +87,7 @@ import { UniGraphQLProvider } from '../graphql/graphql-provider'
 import { TrafficSwitcherITokenFeeFetcher } from '../util/traffic-switch/traffic-switcher-i-token-fee-fetcher'
 
 export const SUPPORTED_CHAINS: ChainId[] = [
-  // ChainId.MAINNET,
-  // ChainId.OPTIMISM,
-  // ChainId.ARBITRUM_ONE,
-  // ChainId.POLYGON,
-  // ChainId.SEPOLIA,
-  // ChainId.CELO,
-  // ChainId.CELO_ALFAJORES,
-  // ChainId.BNB,
-  // ChainId.AVALANCHE,
-  // ChainId.BLAST,
-  // ChainId.ZORA,
-  // ChainId.ZKSYNC,
-  ChainId.BASE,
-  ChainId.ABSTRACT_TESTNET,
-  ChainId.ZERO,
-  ChainId.BOB,
-  ChainId.CYBER,
   ChainId.SHAPE,
-  ChainId.INK,
-  ChainId.REDSTONE,
-  ChainId.REDSTONE_GARNET,
-  ChainId.ABSTRACT_MAINNET,
-  ChainId.ANIME,
-  ChainId.ANIME_TESTNET,
-  ChainId.MODE,
 ]
 const DEFAULT_TOKEN_LIST = 'https://api-abstract.reservoir.tools/tokenlist/v1'
 

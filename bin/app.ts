@@ -9,13 +9,11 @@ import { CodeBuildStep, CodePipeline, CodePipelineSource } from 'aws-cdk-lib/pip
 import { Construct } from 'constructs'
 import dotenv from 'dotenv'
 import 'source-map-support/register'
-// import { SUPPORTED_CHAINS } from '../lib/handlers/injector-sor'
+import { SUPPORTED_CHAINS } from '../lib/handlers/injector-sor'
 import { STAGE } from '../lib/util/stage'
 import { RoutingAPIStack } from './stacks/routing-api-stack'
 
 dotenv.config()
-// TODO: revert
-const SUPPORTED_CHAINS = [ChainId.SHAPE]
 
 export class RoutingAPIStage extends Stage {
   public readonly url: CfnOutput

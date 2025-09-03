@@ -4,7 +4,7 @@ import * as aws_cloudwatch from 'aws-cdk-lib/aws-cloudwatch'
 import { Construct } from 'constructs'
 import _ from 'lodash'
 import { QuoteAmountsWidgetsFactory } from '../../lib/dashboards/quote-amounts-widgets-factory'
-// import { SUPPORTED_CHAINS } from '../../lib/handlers/injector-sor'
+import { SUPPORTED_CHAINS } from '../../lib/handlers/injector-sor'
 import { CachedRoutesWidgetsFactory } from '../../lib/dashboards/cached-routes-widgets-factory'
 import { ID_TO_NETWORK_NAME } from '@uniswap/smart-order-router/build/main/util/chains'
 import { RpcProvidersWidgetsFactory } from '../../lib/dashboards/rpc-providers-widgets-factory'
@@ -12,8 +12,6 @@ import { REQUEST_SOURCES } from '../../lib/util/requestSources'
 import { TESTNETS } from '../../lib/util/testNets'
 
 export const NAMESPACE = 'Uniswap'
-// TODO: revert
-const SUPPORTED_CHAINS = [ChainId.SHAPE]
 
 export type LambdaWidget = {
   type: string
