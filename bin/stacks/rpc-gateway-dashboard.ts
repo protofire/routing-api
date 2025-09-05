@@ -12,7 +12,7 @@ import { getProviderId } from '../../lib/rpc/utils'
 
 const providerNameForChain: Map<ChainId, string[]> = getRpcGatewayEnabledChains()
 // TODO: revert
-const SUPPORTED_CHAINS = [ChainId.SHAPE]
+const SUPPORTED_CHAINS = [ChainId.ABSTRACT_MAINNET, ChainId.ZERO]
 
 function getProviderNameForChain(chainId: ChainId): string[] {
   if (!providerNameForChain.has(chainId)) {
