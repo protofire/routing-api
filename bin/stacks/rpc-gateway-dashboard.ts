@@ -5,14 +5,12 @@ import { Construct } from 'constructs'
 import _ from 'lodash'
 import { ID_TO_NETWORK_NAME } from '@uniswap/smart-order-router/build/main/util/chains'
 import { CallType, MAJOR_METHOD_NAMES } from '../../lib/rpc/SingleJsonRpcProvider'
-// import { SUPPORTED_CHAINS } from '../../lib/handlers/injector-sor'
+import { SUPPORTED_CHAINS } from '../../lib/handlers/injector-sor'
 import { TESTNETS } from '../../lib/util/testNets'
 import { getRpcGatewayEnabledChains } from '../../lib/rpc/ProdConfig'
 import { getProviderId } from '../../lib/rpc/utils'
 
 const providerNameForChain: Map<ChainId, string[]> = getRpcGatewayEnabledChains()
-// TODO: revert
-const SUPPORTED_CHAINS = [ChainId.ABSTRACT_MAINNET, ChainId.ZERO]
 
 function getProviderNameForChain(chainId: ChainId): string[] {
   if (!providerNameForChain.has(chainId)) {

@@ -1,9 +1,5 @@
 import BaseJoi from '@hapi/joi'
-// import { SUPPORTED_CHAINS } from '../../injector-sor'
-import { ChainId } from '@uniswap/sdk-core'
-
-// TODO: revert
-const SUPPORTED_CHAINS = [ChainId.ABSTRACT_MAINNET, ChainId.ZERO]
+import { SUPPORTED_CHAINS } from '../../injector-sor'
 
 const Joi = BaseJoi.extend((joi) => ({
   base: joi.array(),

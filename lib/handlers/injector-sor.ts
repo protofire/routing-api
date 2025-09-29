@@ -112,6 +112,7 @@ export const SUPPORTED_CHAINS: ChainId[] = [
   ChainId.ANIME,
   ChainId.ANIME_TESTNET,
   ChainId.MODE,
+  ChainId.FLOW_TESTNET,
 ]
 const DEFAULT_TOKEN_LIST = 'https://api-abstract.reservoir.tools/tokenlist/v1'
 
@@ -371,6 +372,7 @@ export abstract class InjectorSOR<Router, QueryParams> extends Injector<
             case ChainId.ANIME:
             case ChainId.ANIME_TESTNET:
             case ChainId.MODE:
+            case ChainId.FLOW_TESTNET:
               const currentQuoteProvider = new OnChainQuoteProvider(
                 chainId,
                 provider,
@@ -496,6 +498,7 @@ export abstract class InjectorSOR<Router, QueryParams> extends Injector<
             ChainId.ANIME,
             ChainId.ANIME_TESTNET,
             ChainId.MODE,
+            ChainId.FLOW_TESTNET,
           ]
 
           const v4Supported = [ChainId.SEPOLIA]
