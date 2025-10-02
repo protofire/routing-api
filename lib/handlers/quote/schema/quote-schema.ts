@@ -3,7 +3,7 @@ import BaseJoi from '@hapi/joi'
 import { ChainId } from '@uniswap/sdk-core'
 
 // TODO: revert
-const SUPPORTED_CHAINS = [ChainId.ABSTRACT_MAINNET, ChainId.ZERO]
+const SUPPORTED_CHAINS = [ChainId.ABSTRACT_MAINNET, ChainId.ZERO, ChainId.ANIME]
 
 const Joi = BaseJoi.extend((joi) => ({
   base: joi.array(),

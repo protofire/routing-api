@@ -13,7 +13,7 @@ import { TESTNETS } from '../../lib/util/testNets'
 
 export const NAMESPACE = 'Uniswap'
 // TODO: revert
-const SUPPORTED_CHAINS = [ChainId.ABSTRACT_MAINNET, ChainId.ZERO]
+const SUPPORTED_CHAINS = [ChainId.ABSTRACT_MAINNET, ChainId.ZERO, ChainId.ANIME]
 
 export type LambdaWidget = {
   type: string
