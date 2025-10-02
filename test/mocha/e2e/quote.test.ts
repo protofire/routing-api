@@ -2525,6 +2525,7 @@ describe('quote', function () {
     [ChainId.ANIME_TESTNET]: () => USDC_ON(ChainId.ANIME_TESTNET),
     [ChainId.MODE]: () => USDC_ON(ChainId.MODE),
     [ChainId.FLOW_TESTNET]: () => USDC_ON(ChainId.FLOW_TESTNET),
+    [ChainId.FLOW_MAINNET]: () => USDC_ON(ChainId.FLOW_MAINNET), // USDF on Flow Mainnet
   }
 
   const TEST_ERC20_2: { [chainId in ChainId]: () => Token | null } = {
@@ -2566,6 +2567,7 @@ describe('quote', function () {
     [ChainId.ANIME_TESTNET]: () => WNATIVE_ON(ChainId.ANIME_TESTNET),
     [ChainId.MODE]: () => WNATIVE_ON(ChainId.MODE),
     [ChainId.FLOW_TESTNET]: () => WNATIVE_ON(ChainId.FLOW_TESTNET),
+    [ChainId.FLOW_MAINNET]: () => WNATIVE_ON(ChainId.FLOW_MAINNET),
   }
 
   // TODO: Find valid pools/tokens on optimistic kovan and polygon mumbai. We skip those tests for now.
