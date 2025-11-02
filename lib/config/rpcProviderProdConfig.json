@@ -65,6 +65,14 @@
     "providerUrls": ["WEB3_RPC_GATEWAY_8453"]
   },
   {
+    "chainId": 84532,
+    "useMultiProviderProb": 1,
+    "latencyEvaluationSampleProb": 0.01,
+    "healthCheckSampleProb": 0.01,
+    "providerInitialWeights": [1],
+    "providerUrls": ["WEB3_RPC_GATEWAY_84532"]
+  },
+  {
     "chainId": 1,
     "useMultiProviderProb": 1,
     "latencyEvaluationSampleProb": 0.05,
