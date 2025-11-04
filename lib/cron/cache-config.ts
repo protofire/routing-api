@@ -203,20 +203,6 @@ export const chainProtocols = forkConfig.supportLambdaCache ? [
       v3SubgraphUrlOverride(ChainId.BLAST)
     ),
   },
-  {
-    protocol: Protocol.V3,
-    chainId: ChainId.BASE_SEPOLIA,
-    timeout: 90000,
-    provider: new V3SubgraphProvider(
-      ChainId.BASE_SEPOLIA,
-      3,
-      90000,
-      true,
-      v3TrackedEthThreshold,
-      v3UntrackedUsdThreshold,
-      v3SubgraphUrlOverride(ChainId.BASE_SEPOLIA)
-    ),
-  },
 
   // V2.
   {
@@ -337,21 +323,6 @@ export const chainProtocols = forkConfig.supportLambdaCache ? [
       v2TrackedEthThreshold,
       v2UntrackedUsdThreshold,
       v2SubgraphUrlOverride(ChainId.BLAST)
-    ),
-  },
-  {
-    protocol: Protocol.V2,
-    chainId: ChainId.BASE_SEPOLIA,
-    timeout: 90000,
-    provider: new V2SubgraphProvider(
-      ChainId.BASE_SEPOLIA,
-      3,
-      90000,
-      true,
-      1000,
-      v2TrackedEthThreshold,
-      v2UntrackedUsdThreshold,
-      v2SubgraphUrlOverride(ChainId.BASE_SEPOLIA)
     ),
   },
   {
