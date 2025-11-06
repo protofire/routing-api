@@ -116,7 +116,7 @@ export const SUPPORTED_CHAINS: ChainId[] = [
   ChainId.FLOW_MAINNET,
   ChainId.BASE_SEPOLIA,
 ]
-const DEFAULT_TOKEN_LIST = 'https://api-abstract.reservoir.tools/tokenlist/v1'
+const DEFAULT_TOKEN_LIST = 'https://raw.githubusercontent.com/protofire/token-list/refs/heads/main/networks/base-sepolia.json'
 
 export interface RequestInjected<Router> extends BaseRInj {
   chainId: ChainId
