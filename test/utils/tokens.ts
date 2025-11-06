@@ -180,6 +180,14 @@ export const USDC_ON = (chainId: ChainId): Token => {
       return USDC_FLOW_TESTNET
     case ChainId.FLOW_MAINNET:
       return USDF_FLOW_MAINNET
+    case ChainId.BASE_SEPOLIA:
+      return new Token(
+        ChainId.BASE_SEPOLIA,
+        '0x036CbD53842c5426634e7929541eC2318f3dCF7e',
+        6,
+        'USDC',
+        'USD Coin'
+      )
     default:
       throw new Error(`Chain id: ${chainId} not supported`)
   }
