@@ -115,7 +115,7 @@ export const SUPPORTED_CHAINS: ChainId[] = [
   ChainId.FLOW_TESTNET,
   ChainId.FLOW_MAINNET,
 ]
-const DEFAULT_TOKEN_LIST = 'https://api-abstract.reservoir.tools/tokenlist/v1'
+const DEFAULT_TOKEN_LIST = 'https://raw.githubusercontent.com/protofire/token-list/refs/heads/main/tokenList.json'
 
 export interface RequestInjected<Router> extends BaseRInj {
   chainId: ChainId
