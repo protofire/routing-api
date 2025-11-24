@@ -14,8 +14,8 @@ import { STAGE } from '../lib/util/stage'
 import { RoutingAPIStack } from './stacks/routing-api-stack'
 
 dotenv.config()
-// TODO: revert
-const SUPPORTED_CHAINS = [ChainId.ABSTRACT_MAINNET, ChainId.ZERO]
+
+const SUPPORTED_CHAINS = [ChainId.STABLE_TESTNET]
 
 export class RoutingAPIStage extends Stage {
   public readonly url: CfnOutput
@@ -258,6 +258,8 @@ export class RoutingAPIPipeline extends Stack {
       // ANIME TESTNET
       'WEB3_RPC_GATEWAY_6900',
       'WEB3_RPC_GATEWAY_69000',
+      // STABLE TESTNET
+      'WEB3_RPC_GATEWAY_2201',
     ]
     for (const provider of RPC_GATEWAY_PROVIDERS) {
       jsonRpcProviders[provider] = jsonRpcProvidersSecret.secretValueFromJson(provider).toString()
@@ -399,6 +401,7 @@ const jsonRpcProviders = {
   WEB3_RPC_69000: process.env.WEB3_RPC_69000!,
   WEB3_RPC_6900: process.env.WEB3_RPC_6900!,
   WEB3_RPC_34443: process.env.WEB3_RPC_34443!,
+  WEB3_RPC_2201: process.env.WEB3_RPC_2201!,
   // The followings are for RPC Gateway
   // Optimism
   // INFURA_10: process.env.INFURA_10!,
@@ -468,6 +471,8 @@ const jsonRpcProviders = {
   WEB3_RPC_GATEWAY_6900: process.env.WEB3_RPC_GATEWAY_6900!,
   // MODE
   WEB3_RPC_GATEWAY_34443: process.env.WEB3_RPC_GATEWAY_34443!,
+  // STABLE TESTNET
+  WEB3_RPC_GATEWAY_2201: process.env.WEB3_RPC_GATEWAY_2201!,
 }
 
 // Local dev stack

@@ -112,6 +112,7 @@ export const SUPPORTED_CHAINS: ChainId[] = [
   ChainId.ANIME,
   ChainId.ANIME_TESTNET,
   ChainId.MODE,
+  ChainId.STABLE_TESTNET,
 ]
 const DEFAULT_TOKEN_LIST = 'https://api-abstract.reservoir.tools/tokenlist/v1'
 

@@ -30,6 +30,7 @@ import {
   USDC_MAINNET,
   USDC_MODE,
   USDC_OPTIMISM,
+  USDT_STABLE_TESTNET,
   USDC_OPTIMISM_GOERLI,
   USDC_POLYGON,
   USDC_POLYGON_MUMBAI,
@@ -115,6 +116,8 @@ export const USDT_ON = (chainId: ChainId): Token => {
       return USDT_ARBITRUM
     case ChainId.BNB:
       return USDT_BNB
+    case ChainId.STABLE_TESTNET:
+      return USDT_STABLE_TESTNET
     default:
       throw new Error(`Chain id: ${chainId} not supported`)
   }
