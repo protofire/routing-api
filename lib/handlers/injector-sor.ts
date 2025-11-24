@@ -114,7 +114,7 @@ export const SUPPORTED_CHAINS: ChainId[] = [
   ChainId.MODE,
   ChainId.STABLE_TESTNET,
 ]
-const DEFAULT_TOKEN_LIST = 'https://api-abstract.reservoir.tools/tokenlist/v1'
+const DEFAULT_TOKEN_LIST = 'https://assets.swap.w3us.site/networks/stable.json'
 
 export interface RequestInjected<Router> extends BaseRInj {
   chainId: ChainId
@@ -497,6 +497,7 @@ export abstract class InjectorSOR<Router, QueryParams> extends Injector<
             ChainId.ANIME,
             ChainId.ANIME_TESTNET,
             ChainId.MODE,
+            ChainId.STABLE_TESTNET
           ]
 
           const v4Supported = [ChainId.SEPOLIA]
