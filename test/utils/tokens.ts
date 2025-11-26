@@ -47,6 +47,7 @@ import {
   USDT_MAINNET,
   USDT_OPTIMISM,
   WRAPPED_NATIVE_CURRENCY,
+  USDT_STABLE,
 } from '@uniswap/smart-order-router'
 import { ethers } from 'ethers'
 import NodeCache from 'node-cache'
@@ -118,6 +119,8 @@ export const USDT_ON = (chainId: ChainId): Token => {
       return USDT_BNB
     case ChainId.STABLE_TESTNET:
       return USDT_STABLE_TESTNET
+    case ChainId.STABLE:
+      return USDT_STABLE
     default:
       throw new Error(`Chain id: ${chainId} not supported`)
   }

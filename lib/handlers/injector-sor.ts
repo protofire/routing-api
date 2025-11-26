@@ -113,6 +113,7 @@ export const SUPPORTED_CHAINS: ChainId[] = [
   // ChainId.ANIME_TESTNET,
   // ChainId.MODE,
   ChainId.STABLE_TESTNET,
+  ChainId.STABLE,
 ]
 const DEFAULT_TOKEN_LIST = 'https://assets.swap.w3us.site/networks/stable.json'
 
@@ -497,7 +498,8 @@ export abstract class InjectorSOR<Router, QueryParams> extends Injector<
             ChainId.ANIME,
             ChainId.ANIME_TESTNET,
             ChainId.MODE,
-            ChainId.STABLE_TESTNET
+            ChainId.STABLE_TESTNET,
+            ChainId.STABLE,
           ]
 
           const v4Supported = [ChainId.SEPOLIA]

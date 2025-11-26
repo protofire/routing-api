@@ -15,7 +15,7 @@ import { RoutingAPIStack } from './stacks/routing-api-stack'
 
 dotenv.config()
 
-const SUPPORTED_CHAINS = [ChainId.STABLE_TESTNET]
+const SUPPORTED_CHAINS = [ChainId.STABLE_TESTNET, ChainId.STABLE]
 
 export class RoutingAPIStage extends Stage {
   public readonly url: CfnOutput
@@ -260,6 +260,8 @@ export class RoutingAPIPipeline extends Stack {
       'WEB3_RPC_GATEWAY_69000',
       // STABLE TESTNET
       'WEB3_RPC_GATEWAY_2201',
+      // STABLE
+      'WEB3_RPC_GATEWAY_988',
     ]
     for (const provider of RPC_GATEWAY_PROVIDERS) {
       jsonRpcProviders[provider] = jsonRpcProvidersSecret.secretValueFromJson(provider).toString()
@@ -473,6 +475,8 @@ const jsonRpcProviders = {
   WEB3_RPC_GATEWAY_34443: process.env.WEB3_RPC_GATEWAY_34443!,
   // STABLE TESTNET
   WEB3_RPC_GATEWAY_2201: process.env.WEB3_RPC_GATEWAY_2201!,
+  // STABLE
+  WEB3_RPC_GATEWAY_988: process.env.WEB3_RPC_GATEWAY_988!,
 }
 
 // Local dev stack

@@ -15,4 +15,5 @@ export const TESTNETS = [
   ChainId.ANIME_TESTNET,
   ChainId.REDSTONE_GARNET,
   ChainId.STABLE_TESTNET,
+  ChainId.STABLE,
 ]
