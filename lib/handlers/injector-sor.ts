@@ -115,7 +115,8 @@ export const SUPPORTED_CHAINS: ChainId[] = [
   ChainId.STABLE_TESTNET,
   ChainId.STABLE,
 ]
-const DEFAULT_TOKEN_LIST = 'https://assets.swap.w3us.site/networks/stable.json'
+// const DEFAULT_TOKEN_LIST = 'https://assets.swap.w3us.site/networks/stable.json'
+const DEFAULT_TOKEN_LIST = 'http://raw.githubusercontent.com/protofire/token-list/refs/heads/main/networks/stable.json'
 
 export interface RequestInjected<Router> extends BaseRInj {
   chainId: ChainId

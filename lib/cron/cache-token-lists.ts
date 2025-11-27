@@ -4,7 +4,8 @@ import axios from 'axios'
 import { default as bunyan, default as Logger } from 'bunyan'
 
 const TOKEN_LISTS = [
-  'https://assets.swap.w3us.site/networks/stable.json',
+  // 'https://assets.swap.w3us.site/networks/stable.json',
+  'http://raw.githubusercontent.com/protofire/token-list/refs/heads/main/networks/stable.json',
 ]
 
 const handler: ScheduledHandler = async (event: EventBridgeEvent<string, void>) => {
