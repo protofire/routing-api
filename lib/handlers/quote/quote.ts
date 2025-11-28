@@ -75,6 +75,8 @@ export class QuoteHandler extends APIGLambdaHandler<
         provider.shouldEvaluate = true
       }
 
+      log.info(params)
+
       result = await this.handleRequestInternal(params, startTime)
 
       switch (result.statusCode) {
@@ -287,6 +289,9 @@ export class QuoteHandler extends APIGLambdaHandler<
     }
 
     // Parse user provided token address/symbol to Currency object.
+    log.info(tokenListProvider)
+    log.info(tokenProvider)
+
     const currencyLookupStartTime = Date.now()
     const currencyLookup = new CurrencyLookup(tokenListProvider, tokenProvider, log)
     const [currencyIn, currencyOut] = await Promise.all([
