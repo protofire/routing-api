@@ -94,7 +94,7 @@ import { NEW_CACHED_ROUTES_ROLLOUT_PERCENT } from '../util/newCachedRoutesRollou
 import { TENDERLY_NEW_ENDPOINT_ROLLOUT_PERCENT } from '../util/tenderlyNewEndpointRolloutPercent'
 
 export const SUPPORTED_CHAINS: ChainId[] = [
-  ChainId.MAINNET,
+  // ChainId.MAINNET,
   // ChainId.OPTIMISM,
   // ChainId.ARBITRUM_ONE,
   // ChainId.POLYGON,
