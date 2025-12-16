@@ -402,6 +402,8 @@ export class RoutingAPIPipeline extends Stack {
       'ALCHEMY_1301',
       // unirpc - serves all chains
       'UNIRPC_0',
+      // cyber testnet
+      'WEB3_RPC_GATEWAY_111557560',
     ]
     for (const provider of RPC_GATEWAY_PROVIDERS) {
       jsonRpcProviders[provider] = jsonRpcProvidersSecret.secretValueFromJson(provider).toString()
@@ -701,6 +703,8 @@ const jsonRpcProviders = {
   ALCHEMY_1301: process.env.ALCHEMY_1301!,
   // unirpc - serves all chains
   UNIRPC_0: process.env.UNIRPC_0!,
+  WEB3_RPC_111557560: process.env.WEB3_RPC_111557560!,
+  WEB3_RPC_GATEWAY_111557560: process.env.WEB3_RPC_GATEWAY_111557560!,
 }
 
 // Local dev stack
