@@ -1,11 +1,21 @@
 import { Protocol } from '@uniswap/router-sdk'
 import { UniversalRouterVersion } from '@uniswap/universal-router-sdk'
+import { ChainId } from '@uniswap/sdk-core'
 
 export const SUPPORTED_PROTOCOL_VERSIONS = [Protocol.V2, Protocol.V3, Protocol.V4]
 
-export function convertStringRouterVersionToEnum(routerVersion?: string): UniversalRouterVersion {
+const V4_ONLY_CHAINS = [ChainId.CYBER_TESTNET]
+
+export function convertStringRouterVersionToEnum(routerVersion?: string, chainId?: ChainId): UniversalRouterVersion {
   const validVersions = Object.values(UniversalRouterVersion)
-  return validVersions.find((v) => v === routerVersion) || UniversalRouterVersion.V1_2
+  const parsedVersion = validVersions.find((v) => v === routerVersion)
+  if (parsedVersion) {
+    return parsedVersion
+  }
+  if (chainId && V4_ONLY_CHAINS.includes(chainId)) {
+    return UniversalRouterVersion.V2_0
+  }
+  return UniversalRouterVersion.V1_2
 }
 
 export type URVersionsToProtocolVersionsMapping = {
