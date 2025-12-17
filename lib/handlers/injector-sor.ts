@@ -66,7 +66,7 @@ import { DefaultEVMClient } from './evm/EVMClient'
 import { InstrumentedEVMProvider } from './evm/provider/InstrumentedEVMProvider'
 import { deriveProviderName } from './evm/provider/ProviderName'
 import { V2DynamoCache } from './pools/pool-caching/v2/v2-dynamo-cache'
-import { OnChainTokenFeeFetcher } from '@uniswap/smart-order-router/build/main/providers/token-fee-fetcher'
+import { ITokenFeeFetcher, OnChainTokenFeeFetcher } from '@uniswap/smart-order-router/build/main/providers/token-fee-fetcher'
 import { PortionProvider } from '@uniswap/smart-order-router/build/main/providers/portion-provider'
 import { GlobalRpcProviders } from '../rpc/GlobalRpcProviders'
 import { StaticJsonRpcProvider } from '@ethersproject/providers'
@@ -92,6 +92,7 @@ import {
 } from '../util/extraV4FeeTiersTickSpacingsHookAddresses'
 import { NEW_CACHED_ROUTES_ROLLOUT_PERCENT } from '../util/newCachedRoutesRolloutPercent'
 import { TENDERLY_NEW_ENDPOINT_ROLLOUT_PERCENT } from '../util/tenderlyNewEndpointRolloutPercent'
+import { forkConfig } from '../../forkConfig'
 
 export const SUPPORTED_CHAINS: ChainId[] = [
   // ChainId.MAINNET,
@@ -280,21 +281,26 @@ export abstract class InjectorSOR<Router, QueryParams> extends Injector<
           })
 
           const onChainTokenFeeFetcher = new OnChainTokenFeeFetcher(chainId, provider)
-          const graphQLTokenFeeFetcher = new GraphQLTokenFeeFetcher(
-            new UniGraphQLProvider(),
-            onChainTokenFeeFetcher,
-            chainId
-          )
-          const trafficSwitcherTokenFetcher = new TrafficSwitcherITokenFeeFetcher('TokenFetcherExperimentV2', {
-            control: graphQLTokenFeeFetcher,
-            treatment: onChainTokenFeeFetcher,
-            aliasControl: 'graphQLTokenFeeFetcher',
-            aliasTreatment: 'onChainTokenFeeFetcher',
-            customization: {
-              pctEnabled: 0.0,
-              pctShadowSampling: 0.005,
-            },
-          })
+          let tokenFeeFetcher: ITokenFeeFetcher
+          if (forkConfig.gqlEnabled) {
+            const graphQLTokenFeeFetcher = new GraphQLTokenFeeFetcher(
+              new UniGraphQLProvider(),
+              onChainTokenFeeFetcher,
+              chainId
+            )
+            tokenFeeFetcher = new TrafficSwitcherITokenFeeFetcher('TokenFetcherExperimentV2', {
+              control: graphQLTokenFeeFetcher,
+              treatment: onChainTokenFeeFetcher,
+              aliasControl: 'graphQLTokenFeeFetcher',
+              aliasTreatment: 'onChainTokenFeeFetcher',
+              customization: {
+                pctEnabled: 0.0,
+                pctShadowSampling: 0.005,
+              },
+            })
+          } else {
+            tokenFeeFetcher = onChainTokenFeeFetcher
+          }
 
           const tokenValidatorProvider = new TokenValidatorProvider(
             chainId,
@@ -304,7 +310,7 @@ export abstract class InjectorSOR<Router, QueryParams> extends Injector<
           const tokenPropertiesProvider = new TokenPropertiesProvider(
             chainId,
             new NodeJSCache(new NodeCache({ stdTTL: 30000, useClones: false })),
-            trafficSwitcherTokenFetcher
+            tokenFeeFetcher
           )
           const underlyingV2PoolProvider = new V2PoolProvider(chainId, multicall2Provider, tokenPropertiesProvider)
           const v2PoolProvider = new CachingV2PoolProvider(
