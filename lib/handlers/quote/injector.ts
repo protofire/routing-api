@@ -8,6 +8,11 @@ import {
   setGlobalMetric,
   V3HeuristicGasModelFactory,
 } from '@uniswap/smart-order-router'
+import { Protocol } from '@uniswap/router-sdk'
+import {
+  convertStringRouterVersionToEnum,
+  URVersionsToProtocolVersions,
+} from '../../util/supportedProtocolVersions'
 import { MetricsLogger } from 'aws-embedded-metrics'
 import { APIGatewayProxyEvent, Context } from 'aws-lambda'
 import { default as bunyan, default as Logger } from 'bunyan'
@@ -41,6 +46,7 @@ export class QuoteHandlerInjector extends InjectorSOR<
       intent,
       gasToken,
       enableDebug,
+      protocols: protocolsStr,
     } = requestQueryParams
 
     const { dependencies, activityId } = containerInjected
@@ -83,6 +89,41 @@ export class QuoteHandlerInjector extends InjectorSOR<
       throw new Error(`No container injected dependencies for chain: ${chainIdEnum}`)
     }
 
+    const universalRouterVersion = convertStringRouterVersionToEnum(
+      _event.headers?.['x-universal-router-version'],
+      chainIdEnum
+    )
+
+    let protocols: Protocol[] | undefined = undefined
+    if (protocolsStr) {
+      const requestedProtocols = Array.isArray(protocolsStr) ? protocolsStr : [protocolsStr]
+      protocols = []
+      for (const protocolStr of requestedProtocols) {
+        switch (protocolStr.toUpperCase()) {
+          case Protocol.V2:
+            if (URVersionsToProtocolVersions[universalRouterVersion].includes(Protocol.V2)) {
+              protocols.push(Protocol.V2)
+            }
+            break
+          case Protocol.V3:
+            if (URVersionsToProtocolVersions[universalRouterVersion].includes(Protocol.V3)) {
+              protocols.push(Protocol.V3)
+            }
+            break
+          case Protocol.V4:
+            if (URVersionsToProtocolVersions[universalRouterVersion].includes(Protocol.V4)) {
+              protocols.push(Protocol.V4)
+            }
+            break
+          case Protocol.MIXED:
+            protocols.push(Protocol.MIXED)
+            break
+        }
+      }
+    }
+
+    const onlyV4Requested = protocols?.length === 1 && protocols[0] === Protocol.V4
+
     const {
       provider,
       v4PoolProvider,
@@ -117,6 +158,16 @@ export class QuoteHandlerInjector extends InjectorSOR<
       gasPriceProvider = new StaticGasPriceProvider(gasPriceWeiBN)
     }
 
+    if (onlyV4Requested) {
+      log.info(
+        {
+          chainId,
+          protocols,
+        },
+        `Only V4 requested - skipping V2/V3 providers for this request`
+      )
+    }
+
     let router
     switch (algorithm) {
       case 'alpha':
@@ -126,17 +177,17 @@ export class QuoteHandlerInjector extends InjectorSOR<
           provider,
           v4SubgraphProvider,
           v4PoolProvider,
-          v3SubgraphProvider,
+          v3SubgraphProvider: onlyV4Requested ? undefined : v3SubgraphProvider,
           multicall2Provider: multicallProvider,
-          v3PoolProvider,
+          v3PoolProvider: onlyV4Requested ? undefined : v3PoolProvider,
           onChainQuoteProvider,
           gasPriceProvider,
           v3GasModelFactory: new V3HeuristicGasModelFactory(provider),
           blockedTokenListProvider,
           tokenProvider,
-          v2PoolProvider,
-          v2QuoteProvider,
-          v2SubgraphProvider,
+          v2PoolProvider: onlyV4Requested ? undefined : v2PoolProvider,
+          v2QuoteProvider: onlyV4Requested ? undefined : v2QuoteProvider,
+          v2SubgraphProvider: onlyV4Requested ? undefined : v2SubgraphProvider,
           simulator,
           routeCachingProvider,
           tokenValidatorProvider,

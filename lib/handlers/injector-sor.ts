@@ -362,6 +362,31 @@ export abstract class InjectorSOR<Router, QueryParams> extends Injector<
                     },
                     `Using StaticV4SubgraphProvider for CYBER_TESTNET`
                   )
+                  const originalGetPools = staticProvider.getPools.bind(staticProvider)
+                  staticProvider.getPools = async () => {
+                    log.info(
+                      {
+                        chainId,
+                        v4PoolParamsCount: v4PoolParams.length,
+                      },
+                      `StaticV4SubgraphProvider.getPools() called for CYBER_TESTNET`
+                    )
+                    const pools = await originalGetPools()
+                    log.info(
+                      {
+                        chainId,
+                        poolsCount: pools.length,
+                        poolsSample: pools.slice(0, 3).map((p) => ({
+                          id: p.id,
+                          token0: p.token0.id,
+                          token1: p.token1.id,
+                          feeTier: p.feeTier,
+                        })),
+                      },
+                      `StaticV4SubgraphProvider.getPools() returned ${pools.length} pools for CYBER_TESTNET`
+                    )
+                    return pools
+                  }
                   return staticProvider as IV4SubgraphProvider
                 })()
               : ((await this.instantiateSubgraphProvider(
