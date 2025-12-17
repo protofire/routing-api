@@ -227,39 +227,39 @@ export const chainProtocols = [
   // V3.
   {
     protocol: Protocol.V3,
-    chainId: ChainId.CYBER_TESTNET,
+    chainId: ChainId.MONAD,
     timeout: 90000,
     provider: new V3SubgraphProvider(
-      ChainId.CYBER_TESTNET,
+      ChainId.MONAD,
       3,
       90000,
       true,
       v3TrackedEthThreshold,
       v3UntrackedUsdThreshold,
-      v3SubgraphUrlOverride(ChainId.CYBER_TESTNET)
+      v3SubgraphUrlOverride(ChainId.MONAD)
     ),
   },
   {
     protocol: Protocol.V2,
-    chainId: ChainId.CYBER_TESTNET,
+    chainId: ChainId.MONAD,
     timeout: 840000,
     provider: new V2SubgraphProvider(
-      ChainId.CYBER_TESTNET,
+      ChainId.MONAD,
       5,
       900000,
       true,
       1000,
       v2TrackedEthThreshold,
       v2UntrackedUsdThreshold,
-      v2SubgraphUrlOverride(ChainId.CYBER_TESTNET)
+      v2SubgraphUrlOverride(ChainId.MONAD)
     ), // 1000 is the largest page size supported by thegraph
   },
     {
     protocol: Protocol.V4,
-    chainId: ChainId.CYBER_TESTNET,
+    chainId: ChainId.MONAD,
     timeout: 90000,
     provider: new V4SubgraphProvider(
-      ChainId.CYBER_TESTNET,
+      ChainId.MONAD,
       3,
       90000,
       true,
@@ -267,14 +267,14 @@ export const chainProtocols = [
       v4BaseZoraTrackedEthThreshold,
       ZORA_HOOKS_FOR_V4_SUBGRAPH_FILTERING,
       v4UntrackedUsdThreshold,
-      v4SubgraphUrlOverride(ChainId.CYBER_TESTNET)
+      v4SubgraphUrlOverride(ChainId.MONAD)
     ),
     eulerHooksProvider: new EulerSwapHooksSubgraphProvider(
-      ChainId.CYBER_TESTNET,
+      ChainId.MONAD,
       3,
       90000,
       true,
-      v4SubgraphUrlOverride(ChainId.CYBER_TESTNET)
+      v4SubgraphUrlOverride(ChainId.MONAD)
     ),
   },
 ]
