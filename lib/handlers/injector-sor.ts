@@ -331,14 +331,16 @@ export abstract class InjectorSOR<Router, QueryParams> extends Injector<
           ] = await Promise.all([
             AWSTokenListProvider.fromTokenListS3Bucket(chainId, TOKEN_LIST_CACHE_BUCKET!, DEFAULT_TOKEN_LIST),
             CachingTokenListProvider.fromTokenList(chainId, UNSUPPORTED_TOKEN_LIST as TokenList, blockedTokenCache),
-            (await this.instantiateSubgraphProvider(
-              chainId,
-              Protocol.V4,
-              POOL_CACHE_BUCKET_3!,
-              POOL_CACHE_GZIP_KEY!,
-              v4PoolProvider,
-              v4PoolParams
-            )) as V4AWSSubgraphProvider,
+            (chainId === ChainId.CYBER_TESTNET
+              ? new StaticV4SubgraphProvider(chainId, v4PoolProvider, v4PoolParams)
+              : (await this.instantiateSubgraphProvider(
+                  chainId,
+                  Protocol.V4,
+                  POOL_CACHE_BUCKET_3!,
+                  POOL_CACHE_GZIP_KEY!,
+                  v4PoolProvider,
+                  v4PoolParams
+                )) as V4AWSSubgraphProvider),
             (await this.instantiateSubgraphProvider(
               chainId,
               Protocol.V3,
