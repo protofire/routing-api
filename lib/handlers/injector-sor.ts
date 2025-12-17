@@ -610,6 +610,7 @@ export abstract class InjectorSOR<Router, QueryParams> extends Injector<
             ChainId.SONEIUM,
             ChainId.MONAD,
             ChainId.CELO,
+            ChainId.CYBER_TESTNET,
           ]
 
           // https://linear.app/uniswap/issue/ROUTE-467/tenderly-simulation-during-caching-lambda
