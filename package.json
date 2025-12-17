@@ -19,7 +19,8 @@
     "cdk": "cdk",
     "fix": "run-s fix:*",
     "fix:prettier": "prettier \"./**/*.ts\" --write",
-    "fix:lint": "eslint lib --ext .ts --fix"
+    "fix:lint": "eslint lib --ext .ts --fix",
+    "postinstall": "patch-package"
   },
   "devDependencies": {
     "@jest/globals": "^29.5.0",
