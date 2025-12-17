@@ -256,11 +256,22 @@ export abstract class InjectorSOR<Router, QueryParams> extends Injector<
           // We didn't switch caching from in-memory to dynamo for V3, and we haven't seen perf degradation
           // We switched caching from in-memory to dynamo for V2, and we haven't seen perf improvement
           // V2 has a lot more pools than V3, so for V4 we don't need to pre-emptively switch to dynamo
+          const underlyingV4PoolProvider = new V4PoolProvider(chainId, multicall2Provider)
           const v4PoolProvider = new CachingV4PoolProvider(
             chainId,
-            new V4PoolProvider(chainId, multicall2Provider),
+            underlyingV4PoolProvider,
             new NodeJSCache(new NodeCache({ stdTTL: 180, useClones: false }))
           )
+          
+          if (chainId === ChainId.CYBER_TESTNET) {
+            log.info(
+              {
+                chainId,
+                providerType: 'V4PoolProvider',
+              },
+              `V4PoolProvider created for CYBER_TESTNET - will check pools on-chain for requested tokens`
+            )
+          }
 
           const noCacheV3PoolProvider = new V3PoolProvider(chainId, multicall2Provider)
           const inMemoryCachingV3PoolProvider = new CachingV3PoolProvider(
@@ -322,6 +333,15 @@ export abstract class InjectorSOR<Router, QueryParams> extends Injector<
             EXTRA_V4_FEE_TICK_SPACINGS_HOOK_ADDRESSES[chainId] ?? emptyV4FeeTickSpacingsHookAddresses
           )
 
+          log.info(
+            {
+              chainId,
+              v4PoolParamsCount: v4PoolParams.length,
+              v4PoolParams,
+            },
+            `V4 pool params for chain ${chainId}: ${v4PoolParams.length} params`
+          )
+
           const [
             tokenListProvider,
             blockedTokenListProvider,
@@ -332,15 +352,26 @@ export abstract class InjectorSOR<Router, QueryParams> extends Injector<
             AWSTokenListProvider.fromTokenListS3Bucket(chainId, TOKEN_LIST_CACHE_BUCKET!, DEFAULT_TOKEN_LIST),
             CachingTokenListProvider.fromTokenList(chainId, UNSUPPORTED_TOKEN_LIST as TokenList, blockedTokenCache),
             (chainId === ChainId.CYBER_TESTNET
-              ? new StaticV4SubgraphProvider(chainId, v4PoolProvider, v4PoolParams)
-              : (await this.instantiateSubgraphProvider(
+              ? (() => {
+                  const staticProvider = new StaticV4SubgraphProvider(chainId, v4PoolProvider, v4PoolParams)
+                  log.info(
+                    {
+                      chainId,
+                      v4PoolParamsCount: v4PoolParams.length,
+                      providerType: 'StaticV4SubgraphProvider',
+                    },
+                    `Using StaticV4SubgraphProvider for CYBER_TESTNET`
+                  )
+                  return staticProvider as IV4SubgraphProvider
+                })()
+              : ((await this.instantiateSubgraphProvider(
                   chainId,
                   Protocol.V4,
                   POOL_CACHE_BUCKET_3!,
                   POOL_CACHE_GZIP_KEY!,
                   v4PoolProvider,
                   v4PoolParams
-                )) as V4AWSSubgraphProvider),
+                )) as IV4SubgraphProvider)),
             (await this.instantiateSubgraphProvider(
               chainId,
               Protocol.V3,
