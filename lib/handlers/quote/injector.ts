@@ -164,7 +164,7 @@ export class QuoteHandlerInjector extends InjectorSOR<
           chainId,
           protocols,
         },
-        `Only V4 requested - skipping V2/V3 providers for this request`
+        `Only V4 requested - keeping V3 providers for gas estimation, but V4 should be used for routing`
       )
     }
 
@@ -177,9 +177,9 @@ export class QuoteHandlerInjector extends InjectorSOR<
           provider,
           v4SubgraphProvider,
           v4PoolProvider,
-          v3SubgraphProvider: onlyV4Requested ? undefined : v3SubgraphProvider,
+          v3SubgraphProvider,
           multicall2Provider: multicallProvider,
-          v3PoolProvider: onlyV4Requested ? undefined : v3PoolProvider,
+          v3PoolProvider,
           onChainQuoteProvider,
           gasPriceProvider,
           v3GasModelFactory: new V3HeuristicGasModelFactory(provider),
