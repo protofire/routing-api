@@ -116,7 +116,7 @@ export const SUPPORTED_CHAINS: ChainId[] = [
   // ChainId.SONEIUM,
   ChainId.CYBER_TESTNET
 ]
-const DEFAULT_TOKEN_LIST = 'https://assets.swap.w3us.site/abstract.json'
+const DEFAULT_TOKEN_LIST = 'https://assets.swap.w3us.site/networks/anime.json'
 
 export interface RequestInjected<Router> extends BaseRInj {
   chainId: ChainId
