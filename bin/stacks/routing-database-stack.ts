@@ -3,7 +3,9 @@ import * as aws_dynamodb from 'aws-cdk-lib/aws-dynamodb'
 import { AttributeType, BillingMode } from 'aws-cdk-lib/aws-dynamodb'
 import { Construct } from 'constructs'
 
-export interface RoutingDatabaseStackProps extends cdk.NestedStackProps {}
+export interface RoutingDatabaseStackProps extends cdk.NestedStackProps {
+  customerName: string
+}
 
 export const DynamoDBTableProps = {
   RoutesDbTable: {
@@ -72,7 +74,7 @@ export class RoutingDatabaseStack extends cdk.NestedStack {
 
     // Creates a DynamoDB Table for storing the routes
     this.routesDynamoDb = new aws_dynamodb.Table(this, DynamoDBTableProps.RoutesDbTable.Name, {
-      tableName: DynamoDBTableProps.RoutesDbTable.Name,
+      tableName: `${props.customerName}-${DynamoDBTableProps.RoutesDbTable.Name}`,
       partitionKey: { name: DynamoDBTableProps.RoutesDbTable.PartitionKeyName, type: AttributeType.STRING },
       sortKey: { name: DynamoDBTableProps.RoutesDbTable.SortKeyName, type: AttributeType.NUMBER },
       billingMode: BillingMode.PAY_PER_REQUEST,
@@ -84,7 +86,7 @@ export class RoutingDatabaseStack extends cdk.NestedStack {
       this,
       DynamoDBTableProps.RoutesDbCachingRequestFlagTable.Name,
       {
-        tableName: DynamoDBTableProps.RoutesDbCachingRequestFlagTable.Name,
+        tableName: `${props.customerName}-${DynamoDBTableProps.RoutesDbCachingRequestFlagTable.Name}`,
         partitionKey: {
           name: DynamoDBTableProps.RoutesDbCachingRequestFlagTable.PartitionKeyName,
           type: AttributeType.STRING,
@@ -97,7 +99,7 @@ export class RoutingDatabaseStack extends cdk.NestedStack {
 
     // Creates a DynamoDB Table for storing the cached routes
     this.cachedRoutesDynamoDb = new aws_dynamodb.Table(this, DynamoDBTableProps.CacheRouteDynamoDbTable.Name, {
-      tableName: DynamoDBTableProps.CacheRouteDynamoDbTable.Name,
+      tableName: `${props.customerName}-${DynamoDBTableProps.CacheRouteDynamoDbTable.Name}`,
       partitionKey: { name: DynamoDBTableProps.CacheRouteDynamoDbTable.PartitionKeyName, type: AttributeType.STRING },
       sortKey: { name: DynamoDBTableProps.CacheRouteDynamoDbTable.SortKeyName, type: AttributeType.STRING },
       billingMode: BillingMode.PAY_PER_REQUEST,
@@ -109,7 +111,7 @@ export class RoutingDatabaseStack extends cdk.NestedStack {
       this,
       DynamoDBTableProps.CachingRequestFlagDynamoDbTable.Name,
       {
-        tableName: DynamoDBTableProps.CachingRequestFlagDynamoDbTable.Name,
+        tableName: `${props.customerName}-${DynamoDBTableProps.CachingRequestFlagDynamoDbTable.Name}`,
         partitionKey: {
           name: DynamoDBTableProps.CachingRequestFlagDynamoDbTable.PartitionKeyName,
           type: AttributeType.STRING,
@@ -122,7 +124,7 @@ export class RoutingDatabaseStack extends cdk.NestedStack {
 
     // Creates a DynamoDB Table for storing the cached v3 pools
     this.cachedV3PoolsDynamoDb = new aws_dynamodb.Table(this, DynamoDBTableProps.V3PoolsDynamoDbTable.Name, {
-      tableName: DynamoDBTableProps.V3PoolsDynamoDbTable.Name,
+      tableName: `${props.customerName}-${DynamoDBTableProps.V3PoolsDynamoDbTable.Name}`,
       partitionKey: { name: DynamoDBTableProps.V3PoolsDynamoDbTable.PartitionKeyName, type: AttributeType.STRING },
       sortKey: { name: DynamoDBTableProps.V3PoolsDynamoDbTable.SortKeyName, type: AttributeType.NUMBER },
       billingMode: BillingMode.PAY_PER_REQUEST,
@@ -131,7 +133,7 @@ export class RoutingDatabaseStack extends cdk.NestedStack {
 
     // Creates a DynamoDB Table for storing the cached v2 pairs
     this.cachedV2PairsDynamoDb = new aws_dynamodb.Table(this, DynamoDBTableProps.V2PairsDynamoCache.Name, {
-      tableName: DynamoDBTableProps.V2PairsDynamoCache.Name,
+      tableName: `${props.customerName}-${DynamoDBTableProps.V2PairsDynamoCache.Name}`,
       partitionKey: { name: DynamoDBTableProps.V2PairsDynamoCache.PartitionKeyName, type: AttributeType.STRING },
       sortKey: { name: DynamoDBTableProps.V2PairsDynamoCache.SortKeyName, type: AttributeType.NUMBER },
       billingMode: BillingMode.PAY_PER_REQUEST,
@@ -143,7 +145,7 @@ export class RoutingDatabaseStack extends cdk.NestedStack {
       this,
       DynamoDBTableProps.TokenPropertiesCachingDbTable.Name,
       {
-        tableName: DynamoDBTableProps.TokenPropertiesCachingDbTable.Name,
+        tableName: `${props.customerName}-${DynamoDBTableProps.TokenPropertiesCachingDbTable.Name}`,
         partitionKey: {
           name: DynamoDBTableProps.TokenPropertiesCachingDbTable.PartitionKeyName,
           type: AttributeType.STRING,
@@ -155,7 +157,7 @@ export class RoutingDatabaseStack extends cdk.NestedStack {
 
     // NOTICE: This table has become useless after we fully migrate to rpcProviderHealthStateDynamoDb
     new aws_dynamodb.Table(this, DynamoDBTableProps.RpcProviderStateDbTable.Name, {
-      tableName: DynamoDBTableProps.RpcProviderStateDbTable.Name,
+      tableName: `${props.customerName}-${DynamoDBTableProps.RpcProviderStateDbTable.Name}`,
       partitionKey: {
         name: DynamoDBTableProps.RpcProviderStateDbTable.PartitionKeyName,
         type: AttributeType.STRING,
@@ -169,7 +171,7 @@ export class RoutingDatabaseStack extends cdk.NestedStack {
       this,
       DynamoDBTableProps.RpcProviderHealthStateDbTable.Name,
       {
-        tableName: DynamoDBTableProps.RpcProviderHealthStateDbTable.Name,
+        tableName: `${props.customerName}-${DynamoDBTableProps.RpcProviderHealthStateDbTable.Name}`,
         partitionKey: {
           name: DynamoDBTableProps.RpcProviderHealthStateDbTable.PartitionKeyName,
           type: AttributeType.STRING,

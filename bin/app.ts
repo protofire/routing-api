@@ -165,6 +165,7 @@ export class RoutingAPIStage extends Stage {
     } = props
 
     const { url } = new RoutingAPIStack(this, 'RoutingAPI', {
+      customerName,
       jsonRpcProviders,
       provisionedConcurrency,
       ethGasStationInfoUrl,
@@ -707,8 +708,11 @@ const jsonRpcProviders = {
   WEB3_RPC_GATEWAY_111557560: process.env.WEB3_RPC_GATEWAY_111557560!,
 }
 
+const customerName = app.node.tryGetContext('customerName') ?? 'default';
+
 // Local dev stack
-new RoutingAPIStack(app, 'RoutingAPIStack', {
+new RoutingAPIStack(app, `RoutingAPIStack-${customerName}`, {
+  customerName,
   jsonRpcProviders: jsonRpcProviders,
   provisionedConcurrency: process.env.PROVISION_CONCURRENCY ? parseInt(process.env.PROVISION_CONCURRENCY) : 0,
   throttlingOverride: process.env.THROTTLE_PER_FIVE_MINS,
@@ -780,6 +784,11 @@ new RoutingAPIStack(app, 'RoutingAPIStack', {
   goldskyAvalancheV4Id: process.env.GOLD_SKY_AVALANCHE_V4_ID!,
 })
 
-new RoutingAPIPipeline(app, 'RoutingAPIPipelineStack', {
-  env: { account: '644039819003', region: 'us-east-2' },
-})
+const enablePipelines =
+  app.node.tryGetContext('enablePipelines') === 'true';
+
+if (enablePipelines) {
+  new RoutingAPIPipeline(app, 'RoutingAPIPipelineStack', {
+    env: { account: '644039819003', region: 'us-east-2' },
+  })
+}

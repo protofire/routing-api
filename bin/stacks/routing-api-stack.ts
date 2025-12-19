@@ -54,6 +54,7 @@ export class RoutingAPIStack extends cdk.Stack {
     parent: Construct,
     name: string,
     props: cdk.StackProps & {
+      customerName: string
       jsonRpcProviders: { [chainName: string]: string }
       provisionedConcurrency: number
       throttlingOverride?: string
@@ -276,7 +277,7 @@ export class RoutingAPIStack extends cdk.Stack {
       cachedV2PairsDynamoDb,
       tokenPropertiesCachingDynamoDb,
       rpcProviderHealthStateDynamoDb,
-    } = new RoutingDatabaseStack(this, 'RoutingDatabaseStack', {})
+    } = new RoutingDatabaseStack(this, 'RoutingDatabaseStack', { customerName: props.customerName, })
 
     const { routingLambda, routingLambdaAlias } = new RoutingLambdaStack(this, 'RoutingLambdaStack', {
       poolCacheBucket,
@@ -306,10 +307,12 @@ export class RoutingAPIStack extends cdk.Stack {
       uniGraphQLHeaderOrigin,
     })
 
-    const accessLogGroup = new aws_logs.LogGroup(this, 'RoutingAPIGAccessLogs')
+    const accessLogGroup = new aws_logs.LogGroup(this, 'RoutingAPIGAccessLogs', {
+      logGroupName: `/aws/apigateway/RoutingAPI/${props.customerName}`,
+    })
 
     const api = new aws_apigateway.RestApi(this, 'routing-api', {
-      restApiName: 'Routing API',
+      restApiName: `${props.customerName} - Routing API`,
       deployOptions: {
         tracingEnabled: true,
         loggingLevel: MethodLoggingLevel.ERROR,
@@ -346,7 +349,7 @@ export class RoutingAPIStack extends cdk.Stack {
           content: '{"errorCode": "TOO_MANY_REQUESTS"}',
         },
       },
-      name: 'RoutingAPIIPThrottling',
+      name: `RoutingAPIIPThrottling-${props.customerName}`,
       rules: [
         {
           name: 'ip',
@@ -411,13 +414,21 @@ export class RoutingAPIStack extends cdk.Stack {
       webAclArn: ipThrottlingACL.getAtt('Arn').toString(),
     })
 
-    new RoutingDashboardStack(this, 'RoutingDashboardStack', {
-      apiName: api.restApiName,
-      routingLambdaName: routingLambda.functionName,
-      poolCacheLambdaNameArray,
-    })
+    const enableCWDashboards =
+      this.node.tryGetContext('enableCWDashboards') === 'true';
 
-    new RpcGatewayFallbackStack(this, 'RpcGatewayFallbackStack', { rpcProviderHealthStateDynamoDb })
+    if (enableCWDashboards) {
+      new RoutingDashboardStack(this, 'RoutingDashboardStack', {
+        apiName: api.restApiName,
+        routingLambdaName: routingLambda.functionName,
+        poolCacheLambdaNameArray,
+      })
+    }
+
+    new RpcGatewayFallbackStack(this, 'RpcGatewayFallbackStack', {
+      rpcProviderHealthStateDynamoDb,
+      customerName: props.customerName
+    })
 
     const lambdaIntegration = new aws_apigateway.LambdaIntegration(routingLambdaAlias)
 
@@ -431,7 +442,7 @@ export class RoutingAPIStack extends cdk.Stack {
 
     // All alarms default to GreaterThanOrEqualToThreshold for when to be triggered.
     const apiAlarm5xxSev2 = new aws_cloudwatch.Alarm(this, 'RoutingAPI-SEV2-5XXAlarm', {
-      alarmName: 'RoutingAPI-SEV2-5XX',
+      alarmName: `RoutingAPIStack-${props.customerName}-RoutingAPI-SEV2-5XX`,
       metric: api.metricServerError({
         period: Duration.minutes(5),
         // For this metric 'avg' represents error rate.
@@ -443,7 +454,7 @@ export class RoutingAPIStack extends cdk.Stack {
     })
 
     const apiAlarm5xxSev3 = new aws_cloudwatch.Alarm(this, 'RoutingAPI-SEV3-5XXAlarm', {
-      alarmName: 'RoutingAPI-SEV3-5XX',
+      alarmName: `RoutingAPIStack-${props.customerName}-RoutingAPI-SEV3-5XX`,
       metric: api.metricServerError({
         period: Duration.minutes(5),
         // For this metric 'avg' represents error rate.
@@ -455,7 +466,7 @@ export class RoutingAPIStack extends cdk.Stack {
     })
 
     const apiAlarm4xxSev2 = new aws_cloudwatch.Alarm(this, 'RoutingAPI-SEV2-4XXAlarm', {
-      alarmName: 'RoutingAPI-SEV2-4XX',
+      alarmName: `RoutingAPIStack-${props.customerName}-RoutingAPI-SEV2-4XX`,
       metric: api.metricClientError({
         period: Duration.minutes(5),
         statistic: 'avg',
@@ -465,7 +476,7 @@ export class RoutingAPIStack extends cdk.Stack {
     })
 
     const apiAlarm4xxSev3 = new aws_cloudwatch.Alarm(this, 'RoutingAPI-SEV3-4XXAlarm', {
-      alarmName: 'RoutingAPI-SEV3-4XX',
+      alarmName: `RoutingAPIStack-${props.customerName}-RoutingAPI-SEV3-4XX`,
       metric: api.metricClientError({
         period: Duration.minutes(5),
         statistic: 'avg',
@@ -475,7 +486,7 @@ export class RoutingAPIStack extends cdk.Stack {
     })
 
     const apiAlarmLatencySev2 = new aws_cloudwatch.Alarm(this, 'RoutingAPI-SEV2-Latency', {
-      alarmName: 'RoutingAPI-SEV2-Latency',
+      alarmName: `RoutingAPIStack-${props.customerName}-RoutingAPI-SEV2-Latency`,
       metric: api.metricLatency({
         period: Duration.minutes(5),
         statistic: 'p90',
@@ -485,7 +496,7 @@ export class RoutingAPIStack extends cdk.Stack {
     })
 
     const apiAlarmLatencySev3 = new aws_cloudwatch.Alarm(this, 'RoutingAPI-SEV3-Latency', {
-      alarmName: 'RoutingAPI-SEV3-Latency',
+      alarmName: `RoutingAPIStack-${props.customerName}-RoutingAPI-SEV3-Latency`,
       metric: api.metricLatency({
         period: Duration.minutes(5),
         statistic: 'p90',
@@ -497,7 +508,7 @@ export class RoutingAPIStack extends cdk.Stack {
     // Tenderly sim system downtime is sev2, because it's swap blocking from trading-api.
     // We have confidence that tenderly is down
     const simulationAlarmSev2 = new aws_cloudwatch.Alarm(this, 'RoutingAPI-SEV2-Simulation', {
-      alarmName: 'RoutingAPI-SEV2-Simulation',
+      alarmName: `RoutingAPIStack-${props.customerName}-RoutingAPI-SEV2-Simulation`,
       metric: new MathExpression({
         expression: '100*(simulationSystemDown/simulationRequested)',
         period: Duration.minutes(30),
@@ -529,7 +540,7 @@ export class RoutingAPIStack extends cdk.Stack {
       }
 
       const simulationAlarmSev2 = new aws_cloudwatch.Alarm(this, `RoutingAPI-SEV2-SimulationChainId${chainId}`, {
-        alarmName: `RoutingAPI-SEV2-SimulationChainId${chainId}`,
+        alarmName: `RoutingAPIStack-${props.customerName}-RoutingAPI-SEV2-SimulationChainId${chainId}`,
         metric: new MathExpression({
           expression: `100*(simulationSystemDown/simulationRequested)`,
           period: Duration.minutes(30),
@@ -565,7 +576,7 @@ export class RoutingAPIStack extends cdk.Stack {
       this,
       'RoutingAPI-SEV3-GQLTokenFeeFetcherFailureRate',
       {
-        alarmName: 'RoutingAPI-SEV3-GQLTokenFeeFetcherFailureRate',
+        alarmName: `RoutingAPIStack-${props.customerName}-RoutingAPI-SEV3-GQLTokenFeeFetcherFailureRate`,
         metric: new MathExpression({
           expression:
             '100*(graphQLTokenFeeFetcherFetchFeesFailure/(graphQLTokenFeeFetcherFetchFeesSuccess+graphQLTokenFeeFetcherFetchFeesFailure))',
@@ -599,7 +610,7 @@ export class RoutingAPIStack extends cdk.Stack {
       if (CHAINS_NOT_MONITORED.includes(chainId)) {
         return
       }
-      const alarmName = `RoutingAPI-SEV3-4XXAlarm-ChainId: ${chainId.toString()}`
+      const alarmName = `RoutingAPIStack-${props.customerName}-RoutingAPI-SEV3-4XXAlarm-ChainId: ${chainId.toString()}`
       // We only want to alert if the volume is high enough over default period (5m) for 4xx errors (no route).
       const invocationsThreshold = 500
       const evaluationPeriods = LOW_VOLUME_CHAINS.has(chainId)
@@ -639,7 +650,7 @@ export class RoutingAPIStack extends cdk.Stack {
       if (CHAINS_NOT_MONITORED.includes(chainId)) {
         return
       }
-      const alarmName = `RoutingAPI-SEV2-SuccessRate-Alarm-ChainId: ${chainId.toString()}`
+      const alarmName = `RoutingAPIStack-${props.customerName}-RoutingAPI-SEV2-SuccessRate-Alarm-ChainId: ${chainId.toString()}`
       // We only want to alert if the volume besides 400 errors is high enough over default period (5m) for 5xx errors.
       const invocationsThreshold = 50
       const evaluationPeriodsMin = LOW_VOLUME_CHAINS.has(chainId)
@@ -687,7 +698,7 @@ export class RoutingAPIStack extends cdk.Stack {
       if (REQUEST_SOURCES_NOT_MONITORED.includes(requestSource)) {
         return
       }
-      const alarmName = `RoutingAPI-SEV2-SuccessRate-Alarm-RequestSource: ${requestSource.toString()}`
+      const alarmName = `RoutingAPIStack-${props.customerName}-RoutingAPI-SEV2-SuccessRate-Alarm-RequestSource: ${requestSource.toString()}`
       // We only want to alert if the volume besides 400 errors is high enough over default period (5m) for 5xx errors.
       const invocationsThreshold = 50
       const evaluationPeriods = LOW_VOLUME_REQUEST_SOURCES.has(requestSource)
@@ -740,7 +751,7 @@ export class RoutingAPIStack extends cdk.Stack {
         if (CHAINS_NOT_MONITORED.includes(chainId)) {
           return
         }
-        const alarmName = `RoutingAPI-SEV3-SuccessRate-Alarm-RequestSource-ChainId: ${requestSource.toString()} ${chainId}`
+        const alarmName = `RoutingAPIStack-${props.customerName}-RoutingAPI-SEV3-SuccessRate-Alarm-RequestSource-ChainId: ${requestSource.toString()} ${chainId}`
         // We only want to alert if the volume besides 400 errors is high enough over default period (5m) for 5xx errors.
         const invocationsThreshold = 50
         const evaluationPeriods =
@@ -790,7 +801,7 @@ export class RoutingAPIStack extends cdk.Stack {
     for (let i = 0; i < chainProtocols.length; i++) {
       const { protocol, chainId } = chainProtocols[i]
       const metricName = `CachePools.chain_${chainId}.${protocol}_protocol.getPools.latency`
-      const alarmName = `CachePools-SEV3-SubgraphNoData-${metricName.replace(/[^a-zA-Z0-9]/g, '_')}`
+      const alarmName = `RoutingAPIStack-${props.customerName}-CachePools-SEV3-SubgraphNoData-${metricName.replace(/[^a-zA-Z0-9]/g, '_')}`
 
       // Create a metric that represents the count of samples in the last 1 day
       // Use a shorter period (1 hour) with more evaluation periods for more responsive detection
@@ -821,7 +832,7 @@ export class RoutingAPIStack extends cdk.Stack {
     for (let i = 0; i < chainProtocols.length; i++) {
       const { protocol, chainId } = chainProtocols[i]
       const metricName = `CachePools.chain_${chainId}.${protocol}_protocol.compressed_size_mb`
-      const alarmName = `CachePools-SEV3-CompressedSizeExceeded-${chainId}-${protocol}`
+      const alarmName = `RoutingAPIStack-${props.customerName}-CachePools-SEV3-CompressedSizeExceeded-${chainId}-${protocol}`
 
       const metric = new aws_cloudwatch.Metric({
         namespace: 'Uniswap',
@@ -863,7 +874,7 @@ export class RoutingAPIStack extends cdk.Stack {
 
       poolCountMetrics.forEach(({ protocol, metricSuffix }) => {
         const metricName = `${protocol}SubgraphProvider.chain_${chainId}.${metricSuffix}`
-        const alarmName = `PoolCountAnomaly-SEV3-${protocol}-ChainId${chainId}-${metricSuffix.replace(
+        const alarmName = `RoutingAPIStack-${props.customerName}-PoolCountAnomaly-SEV3-${protocol}-ChainId${chainId}-${metricSuffix.replace(
           /[^a-zA-Z0-9]/g,
           '_'
         )}`

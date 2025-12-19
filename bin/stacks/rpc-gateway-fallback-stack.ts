@@ -9,7 +9,8 @@ import { DynamoDBTableProps } from './routing-database-stack'
 import * as aws_dynamodb from 'aws-cdk-lib/aws-dynamodb'
 
 export interface RpcGatewayFallbackStackPros extends cdk.NestedStackProps {
-  rpcProviderHealthStateDynamoDb: aws_dynamodb.Table
+  rpcProviderHealthStateDynamoDb: aws_dynamodb.Table,
+  customerName: string
 }
 
 export class RpcGatewayFallbackStack extends cdk.NestedStack {
@@ -62,7 +63,7 @@ export class RpcGatewayFallbackStack extends cdk.NestedStack {
     for (const [chainId, providerNames] of getRpcGatewayEnabledChains()) {
       for (const providerName of providerNames) {
         const providerNameFix = providerName === 'QUICKNODE' ? 'QUIKNODE' : providerName
-        const alarmName = `RoutingAPI-RpcGateway-ErrorRateAlarm-ChainId-${chainId}-Provider-${providerNameFix}`
+        const alarmName = `RoutingAPIStack-${props.customerName}-RoutingAPI-RpcGateway-ErrorRateAlarm-ChainId-${chainId}-Provider-${providerNameFix}`
         const metric = new MathExpression({
           expression: '100*(callFails/(callSuccesses+callFails))',
           usingMetrics: {
@@ -108,7 +109,7 @@ export class RpcGatewayFallbackStack extends cdk.NestedStack {
     for (const [chainId, providerNames] of getRpcGatewayEnabledChains()) {
       for (const providerName of providerNames) {
         const providerNameFix = providerName === 'QUICKNODE' ? 'QUIKNODE' : providerName
-        const alarmName = `RoutingAPI-RpcGateway-LatencyAlarm-ChainId-${chainId}-Provider-${providerNameFix}`
+        const alarmName = `RoutingAPIStack-${props.customerName}-RoutingAPI-RpcGateway-LatencyAlarm-ChainId-${chainId}-Provider-${providerNameFix}`
         const metric = new MathExpression({
           expression: 'p50Latency',
           usingMetrics: {
