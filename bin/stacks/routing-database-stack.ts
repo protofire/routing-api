@@ -79,6 +79,7 @@ export class RoutingDatabaseStack extends cdk.NestedStack {
       sortKey: { name: DynamoDBTableProps.RoutesDbTable.SortKeyName, type: AttributeType.NUMBER },
       billingMode: BillingMode.PAY_PER_REQUEST,
       timeToLiveAttribute: DynamoDBTableProps.TTLAttributeName,
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
     })
 
     // Creates a DynamoDB Table for storing the buckets that are flagging as already cached in the RoutesDb
@@ -94,6 +95,7 @@ export class RoutingDatabaseStack extends cdk.NestedStack {
         sortKey: { name: DynamoDBTableProps.RoutesDbCachingRequestFlagTable.SortKeyName, type: AttributeType.NUMBER },
         billingMode: BillingMode.PAY_PER_REQUEST,
         timeToLiveAttribute: DynamoDBTableProps.TTLAttributeName,
+        removalPolicy: cdk.RemovalPolicy.DESTROY,
       }
     )
 
@@ -104,6 +106,7 @@ export class RoutingDatabaseStack extends cdk.NestedStack {
       sortKey: { name: DynamoDBTableProps.CacheRouteDynamoDbTable.SortKeyName, type: AttributeType.STRING },
       billingMode: BillingMode.PAY_PER_REQUEST,
       timeToLiveAttribute: DynamoDBTableProps.TTLAttributeName,
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
     })
 
     // Creates a DynamoDB Table for storing the buckets that are flagging as already cached in the CachedRoutesDb
@@ -119,6 +122,7 @@ export class RoutingDatabaseStack extends cdk.NestedStack {
         sortKey: { name: DynamoDBTableProps.CachingRequestFlagDynamoDbTable.SortKeyName, type: AttributeType.STRING },
         billingMode: BillingMode.PAY_PER_REQUEST,
         timeToLiveAttribute: DynamoDBTableProps.TTLAttributeName,
+        removalPolicy: cdk.RemovalPolicy.DESTROY,
       }
     )
 
@@ -129,6 +133,7 @@ export class RoutingDatabaseStack extends cdk.NestedStack {
       sortKey: { name: DynamoDBTableProps.V3PoolsDynamoDbTable.SortKeyName, type: AttributeType.NUMBER },
       billingMode: BillingMode.PAY_PER_REQUEST,
       timeToLiveAttribute: DynamoDBTableProps.TTLAttributeName,
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
     })
 
     // Creates a DynamoDB Table for storing the cached v2 pairs
@@ -138,6 +143,7 @@ export class RoutingDatabaseStack extends cdk.NestedStack {
       sortKey: { name: DynamoDBTableProps.V2PairsDynamoCache.SortKeyName, type: AttributeType.NUMBER },
       billingMode: BillingMode.PAY_PER_REQUEST,
       timeToLiveAttribute: DynamoDBTableProps.TTLAttributeName,
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
     })
 
     // Creates a TokenValidationResult Table for storing the FOT/SFT tokens
@@ -152,6 +158,7 @@ export class RoutingDatabaseStack extends cdk.NestedStack {
         },
         billingMode: BillingMode.PAY_PER_REQUEST,
         timeToLiveAttribute: DynamoDBTableProps.TTLAttributeName,
+        removalPolicy: cdk.RemovalPolicy.DESTROY,
       }
     )
 
@@ -164,6 +171,7 @@ export class RoutingDatabaseStack extends cdk.NestedStack {
       },
       billingMode: BillingMode.PAY_PER_REQUEST,
       timeToLiveAttribute: DynamoDBTableProps.TTLAttributeName,
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
     })
 
     // Creates a Table for storing health state of RPC providers
@@ -178,6 +186,7 @@ export class RoutingDatabaseStack extends cdk.NestedStack {
         },
         billingMode: BillingMode.PAY_PER_REQUEST,
         timeToLiveAttribute: DynamoDBTableProps.TTLAttributeName,
+        removalPolicy: cdk.RemovalPolicy.DESTROY,
       }
     )
   }

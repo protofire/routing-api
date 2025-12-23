@@ -309,6 +309,7 @@ export class RoutingAPIStack extends cdk.Stack {
 
     const accessLogGroup = new aws_logs.LogGroup(this, 'RoutingAPIGAccessLogs', {
       logGroupName: `/aws/apigateway/RoutingAPI/${props.customerName}`,
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
     })
 
     const api = new aws_apigateway.RestApi(this, 'routing-api', {
@@ -422,6 +423,7 @@ export class RoutingAPIStack extends cdk.Stack {
         apiName: api.restApiName,
         routingLambdaName: routingLambda.functionName,
         poolCacheLambdaNameArray,
+        customerName: props.customerName,
       })
     }
 

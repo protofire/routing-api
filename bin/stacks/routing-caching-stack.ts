@@ -251,9 +251,18 @@ export class RoutingCachingStack extends cdk.NestedStack {
     this.goldskyCeloV4Id = goldskyCeloV4Id
     this.goldskyAvalancheV4Id = goldskyAvalancheV4Id
     // TODO: Remove and swap to the new bucket below. Kept around for the rollout, but all requests will go to bucket 2.
-    this.poolCacheBucket = new aws_s3.Bucket(this, 'PoolCacheBucket')
-    this.poolCacheBucket2 = new aws_s3.Bucket(this, 'PoolCacheBucket2')
-    this.poolCacheBucket3 = new aws_s3.Bucket(this, 'PoolCacheBucket3')
+    this.poolCacheBucket = new aws_s3.Bucket(this, 'PoolCacheBucket', {
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
+      autoDeleteObjects: true,
+    })
+    this.poolCacheBucket2 = new aws_s3.Bucket(this, 'PoolCacheBucket2', {
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
+      autoDeleteObjects: true,
+    })
+    this.poolCacheBucket3 = new aws_s3.Bucket(this, 'PoolCacheBucket3', {
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
+      autoDeleteObjects: true,
+    })
 
     this.poolCacheBucket2.addLifecycleRule({
       enabled: true,
@@ -434,7 +443,10 @@ export class RoutingCachingStack extends cdk.NestedStack {
       this.poolCacheLambdaNameArray.push(lambda.functionName)
     }
 
-    this.tokenListCacheBucket = new aws_s3.Bucket(this, 'TokenListCacheBucket')
+    this.tokenListCacheBucket = new aws_s3.Bucket(this, 'TokenListCacheBucket', {
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
+      autoDeleteObjects: true,
+    })
 
     const tokenListCachingLambda = new aws_lambda_nodejs.NodejsFunction(this, 'TokenListCacheLambda', {
       role: lambdaRole,

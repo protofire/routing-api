@@ -26,6 +26,7 @@ export interface RoutingDashboardProps extends cdk.NestedStackProps {
   apiName: string
   routingLambdaName: string
   poolCacheLambdaNameArray: string[]
+  customerName: string
 }
 
 export class RoutingDashboardStack extends cdk.NestedStack {
@@ -40,7 +41,7 @@ export class RoutingDashboardStack extends cdk.NestedStack {
     // No CDK resource exists for contributor insights at the moment so use raw CloudFormation.
     const REQUESTED_QUOTES_RULE_NAME = 'RequestedQuotes'
     const REQUESTED_QUOTES_BY_CHAIN_RULE_NAME = 'RequestedQuotesByChain'
-    new cdk.CfnResource(this, 'QuoteContributorInsights', {
+    const quoteContributorInsights = new cdk.CfnResource(this, 'QuoteContributorInsights', {
       type: 'AWS::CloudWatch::InsightRule',
       properties: {
         RuleBody: JSON.stringify({
@@ -59,14 +60,16 @@ export class RoutingDashboardStack extends cdk.NestedStack {
             Keys: ['$.tokenPairSymbol'],
           },
           LogFormat: 'JSON',
-          LogGroupNames: [`/aws/lambda/${routingLambdaName}`],
+          LogGroupNames: [`/aws/lambda/${routingLambdaName}/${props.customerName}`],
         }),
         RuleName: REQUESTED_QUOTES_RULE_NAME,
         RuleState: 'ENABLED',
       },
     })
 
-    new cdk.CfnResource(this, 'QuoteByChainContributorInsights', {
+    quoteContributorInsights.applyRemovalPolicy(cdk.RemovalPolicy.DESTROY)
+
+    const QuoteByChainContributorInsights = new cdk.CfnResource(this, 'QuoteByChainContributorInsights', {
       type: 'AWS::CloudWatch::InsightRule',
       properties: {
         RuleBody: JSON.stringify({
@@ -85,12 +88,14 @@ export class RoutingDashboardStack extends cdk.NestedStack {
             Keys: ['$.tokenPairSymbolChain'],
           },
           LogFormat: 'JSON',
-          LogGroupNames: [`/aws/lambda/${routingLambdaName}`],
+          LogGroupNames: [`/aws/lambda/${routingLambdaName}/${props.customerName}`],
         }),
         RuleName: REQUESTED_QUOTES_BY_CHAIN_RULE_NAME,
         RuleState: 'ENABLED',
       },
     })
+
+    QuoteByChainContributorInsights.applyRemovalPolicy(cdk.RemovalPolicy.DESTROY)
 
     const poolCacheLambdaMetrics: string[][] = []
     poolCacheLambdaNameArray.forEach((poolCacheLambdaName) => {
@@ -578,7 +583,7 @@ export class RoutingDashboardStack extends cdk.NestedStack {
     ).generateWidgets()
 
     new aws_cloudwatch.CfnDashboard(this, 'RoutingAPIDashboard', {
-      dashboardName: `RoutingDashboard`,
+      dashboardName: `${props.customerName}-RoutingDashboard`,
       dashboardBody: JSON.stringify({
         periodOverride: 'inherit',
         widgets: perChainWidgetsForRoutingDashboard
@@ -994,7 +999,7 @@ export class RoutingDashboardStack extends cdk.NestedStack {
 
     const quoteAmountsWidgets = new QuoteAmountsWidgetsFactory(NAMESPACE, region)
     new aws_cloudwatch.CfnDashboard(this, 'RoutingAPITrackedPairsDashboard', {
-      dashboardName: 'RoutingAPITrackedPairsDashboard',
+      dashboardName: `${props.customerName}-RoutingAPITrackedPairsDashboard`,
       dashboardBody: JSON.stringify({
         periodOverride: 'inherit',
         widgets: quoteAmountsWidgets.generateWidgets(),
@@ -1003,7 +1008,7 @@ export class RoutingDashboardStack extends cdk.NestedStack {
 
     const cachedRoutesWidgets = new CachedRoutesWidgetsFactory(NAMESPACE, region, routingLambdaName)
     new aws_cloudwatch.CfnDashboard(this, 'CachedRoutesPerformanceDashboard', {
-      dashboardName: 'CachedRoutesPerformanceDashboard',
+      dashboardName: `${props.customerName}-CachedRoutesPerformanceDashboard`,
       dashboardBody: JSON.stringify({
         periodOverride: 'inherit',
         widgets: cachedRoutesWidgets.generateWidgets(),
@@ -1011,7 +1016,7 @@ export class RoutingDashboardStack extends cdk.NestedStack {
     })
 
     new aws_cloudwatch.CfnDashboard(this, 'RoutingAPIQuoteProviderDashboard', {
-      dashboardName: `RoutingQuoteProviderDashboard`,
+      dashboardName: `${props.customerName}-RoutingQuoteProviderDashboard`,
       dashboardBody: JSON.stringify({
         periodOverride: 'inherit',
         widgets: [
