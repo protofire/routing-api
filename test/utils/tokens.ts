@@ -180,6 +180,8 @@ export const USDC_ON = (chainId: ChainId): Token => {
       return USDC_FLOW_TESTNET
     case ChainId.FLOW_MAINNET:
       return USDF_FLOW_MAINNET
+    case ChainId.ZIRCUIT:
+      return new Token(ChainId.ZIRCUIT, '0x3b952c8C9C44e8Fe201e2b26F6B2200203214cfF', 6, 'USDC', 'USD Coin')
     default:
       throw new Error(`Chain id: ${chainId} not supported`)
   }

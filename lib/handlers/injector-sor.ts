@@ -114,8 +114,9 @@ export const SUPPORTED_CHAINS: ChainId[] = [
   ChainId.MODE,
   ChainId.FLOW_TESTNET,
   ChainId.FLOW_MAINNET,
+  ChainId.ZIRCUIT,
 ]
-const DEFAULT_TOKEN_LIST = 'https://raw.githubusercontent.com/protofire/token-list/refs/heads/main/tokenList.json'
+const DEFAULT_TOKEN_LIST = 'https://raw.githubusercontent.com/protofire/token-list/refs/heads/main/networks/zircuit.json'
 
 export interface RequestInjected<Router> extends BaseRInj {
   chainId: ChainId
@@ -375,6 +376,7 @@ export abstract class InjectorSOR<Router, QueryParams> extends Injector<
             case ChainId.MODE:
             case ChainId.FLOW_TESTNET:
             case ChainId.FLOW_MAINNET:
+            case ChainId.ZIRCUIT:
               const currentQuoteProvider = new OnChainQuoteProvider(
                 chainId,
                 provider,
@@ -502,6 +504,7 @@ export abstract class InjectorSOR<Router, QueryParams> extends Injector<
             ChainId.MODE,
             ChainId.FLOW_TESTNET,
             ChainId.FLOW_MAINNET,
+            ChainId.ZIRCUIT,
           ]
 
           const v4Supported = [ChainId.SEPOLIA]
