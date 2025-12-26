@@ -39,8 +39,8 @@ export class RoutingDashboardStack extends cdk.NestedStack {
     const MAINNETS = SUPPORTED_CHAINS.filter((chain) => !TESTNETS.includes(chain))
 
     // No CDK resource exists for contributor insights at the moment so use raw CloudFormation.
-    const REQUESTED_QUOTES_RULE_NAME = 'RequestedQuotes'
-    const REQUESTED_QUOTES_BY_CHAIN_RULE_NAME = 'RequestedQuotesByChain'
+    const REQUESTED_QUOTES_RULE_NAME = `RequestedQuotes-${props.customerName}`
+    const REQUESTED_QUOTES_BY_CHAIN_RULE_NAME = `RequestedQuotesByChain-${props.customerName}`
     const quoteContributorInsights = new cdk.CfnResource(this, 'QuoteContributorInsights', {
       type: 'AWS::CloudWatch::InsightRule',
       properties: {
