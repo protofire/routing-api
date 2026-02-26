@@ -66,7 +66,7 @@ import { DefaultEVMClient } from './evm/EVMClient'
 import { InstrumentedEVMProvider } from './evm/provider/InstrumentedEVMProvider'
 import { deriveProviderName } from './evm/provider/ProviderName'
 import { V2DynamoCache } from './pools/pool-caching/v2/v2-dynamo-cache'
-import { OnChainTokenFeeFetcher } from '@uniswap/smart-order-router/build/main/providers/token-fee-fetcher'
+import { ITokenFeeFetcher, OnChainTokenFeeFetcher } from '@uniswap/smart-order-router/build/main/providers/token-fee-fetcher'
 import { PortionProvider } from '@uniswap/smart-order-router/build/main/providers/portion-provider'
 import { GlobalRpcProviders } from '../rpc/GlobalRpcProviders'
 import { StaticJsonRpcProvider } from '@ethersproject/providers'
@@ -92,30 +92,32 @@ import {
 } from '../util/extraV4FeeTiersTickSpacingsHookAddresses'
 import { NEW_CACHED_ROUTES_ROLLOUT_PERCENT } from '../util/newCachedRoutesRolloutPercent'
 import { TENDERLY_NEW_ENDPOINT_ROLLOUT_PERCENT } from '../util/tenderlyNewEndpointRolloutPercent'
+import { forkConfig } from '../../forkConfig'
 
 export const SUPPORTED_CHAINS: ChainId[] = [
-  ChainId.MAINNET,
-  ChainId.OPTIMISM,
-  ChainId.ARBITRUM_ONE,
-  ChainId.POLYGON,
-  ChainId.SEPOLIA,
-  ChainId.CELO,
-  ChainId.CELO_ALFAJORES,
-  ChainId.BNB,
-  ChainId.AVALANCHE,
-  ChainId.BASE,
-  ChainId.BLAST,
-  ChainId.ZORA,
-  ChainId.ZKSYNC,
-  ChainId.WORLDCHAIN,
-  ChainId.UNICHAIN_SEPOLIA,
-  ChainId.MONAD_TESTNET,
-  ChainId.MONAD,
-  ChainId.BASE_SEPOLIA,
-  ChainId.UNICHAIN,
-  ChainId.SONEIUM,
+  // ChainId.MAINNET,
+  // ChainId.OPTIMISM,
+  // ChainId.ARBITRUM_ONE,
+  // ChainId.POLYGON,
+  // ChainId.SEPOLIA,
+  // ChainId.CELO,
+  // ChainId.CELO_ALFAJORES,
+  // ChainId.BNB,
+  // ChainId.AVALANCHE,
+  // ChainId.BASE,
+  // ChainId.BLAST,
+  // ChainId.ZORA,
+  // ChainId.ZKSYNC,
+  // ChainId.WORLDCHAIN,
+  // ChainId.UNICHAIN_SEPOLIA,
+  // ChainId.MONAD_TESTNET,
+  // ChainId.MONAD,
+  // ChainId.BASE_SEPOLIA,
+  // ChainId.UNICHAIN,
+  // ChainId.SONEIUM,
+  ChainId.CYBER_TESTNET
 ]
-const DEFAULT_TOKEN_LIST = 'https://gateway.ipfs.io/ipns/tokens.uniswap.org'
+const DEFAULT_TOKEN_LIST = 'https://assets.swap.w3us.site/networks/anime.json'
 
 export interface RequestInjected<Router> extends BaseRInj {
   chainId: ChainId
@@ -254,11 +256,22 @@ export abstract class InjectorSOR<Router, QueryParams> extends Injector<
           // We didn't switch caching from in-memory to dynamo for V3, and we haven't seen perf degradation
           // We switched caching from in-memory to dynamo for V2, and we haven't seen perf improvement
           // V2 has a lot more pools than V3, so for V4 we don't need to pre-emptively switch to dynamo
+          const underlyingV4PoolProvider = new V4PoolProvider(chainId, multicall2Provider)
           const v4PoolProvider = new CachingV4PoolProvider(
             chainId,
-            new V4PoolProvider(chainId, multicall2Provider),
+            underlyingV4PoolProvider,
             new NodeJSCache(new NodeCache({ stdTTL: 180, useClones: false }))
           )
+          
+          if (chainId === ChainId.CYBER_TESTNET) {
+            log.info(
+              {
+                chainId,
+                providerType: 'V4PoolProvider',
+              },
+              `V4PoolProvider created for CYBER_TESTNET - will check pools on-chain for requested tokens`
+            )
+          }
 
           const noCacheV3PoolProvider = new V3PoolProvider(chainId, multicall2Provider)
           const inMemoryCachingV3PoolProvider = new CachingV3PoolProvider(
@@ -279,21 +292,26 @@ export abstract class InjectorSOR<Router, QueryParams> extends Injector<
           })
 
           const onChainTokenFeeFetcher = new OnChainTokenFeeFetcher(chainId, provider)
-          const graphQLTokenFeeFetcher = new GraphQLTokenFeeFetcher(
-            new UniGraphQLProvider(),
-            onChainTokenFeeFetcher,
-            chainId
-          )
-          const trafficSwitcherTokenFetcher = new TrafficSwitcherITokenFeeFetcher('TokenFetcherExperimentV2', {
-            control: graphQLTokenFeeFetcher,
-            treatment: onChainTokenFeeFetcher,
-            aliasControl: 'graphQLTokenFeeFetcher',
-            aliasTreatment: 'onChainTokenFeeFetcher',
-            customization: {
-              pctEnabled: 0.0,
-              pctShadowSampling: 0.005,
-            },
-          })
+          let tokenFeeFetcher: ITokenFeeFetcher
+          if (forkConfig.gqlEnabled) {
+            const graphQLTokenFeeFetcher = new GraphQLTokenFeeFetcher(
+              new UniGraphQLProvider(),
+              onChainTokenFeeFetcher,
+              chainId
+            )
+            tokenFeeFetcher = new TrafficSwitcherITokenFeeFetcher('TokenFetcherExperimentV2', {
+              control: graphQLTokenFeeFetcher,
+              treatment: onChainTokenFeeFetcher,
+              aliasControl: 'graphQLTokenFeeFetcher',
+              aliasTreatment: 'onChainTokenFeeFetcher',
+              customization: {
+                pctEnabled: 0.0,
+                pctShadowSampling: 0.005,
+              },
+            })
+          } else {
+            tokenFeeFetcher = onChainTokenFeeFetcher
+          }
 
           const tokenValidatorProvider = new TokenValidatorProvider(
             chainId,
@@ -303,7 +321,7 @@ export abstract class InjectorSOR<Router, QueryParams> extends Injector<
           const tokenPropertiesProvider = new TokenPropertiesProvider(
             chainId,
             new NodeJSCache(new NodeCache({ stdTTL: 30000, useClones: false })),
-            trafficSwitcherTokenFetcher
+            tokenFeeFetcher
           )
           const underlyingV2PoolProvider = new V2PoolProvider(chainId, multicall2Provider, tokenPropertiesProvider)
           const v2PoolProvider = new CachingV2PoolProvider(
@@ -315,6 +333,15 @@ export abstract class InjectorSOR<Router, QueryParams> extends Injector<
             EXTRA_V4_FEE_TICK_SPACINGS_HOOK_ADDRESSES[chainId] ?? emptyV4FeeTickSpacingsHookAddresses
           )
 
+          log.info(
+            {
+              chainId,
+              v4PoolParamsCount: v4PoolParams.length,
+              v4PoolParams,
+            },
+            `V4 pool params for chain ${chainId}: ${v4PoolParams.length} params`
+          )
+
           const [
             tokenListProvider,
             blockedTokenListProvider,
@@ -324,14 +351,52 @@ export abstract class InjectorSOR<Router, QueryParams> extends Injector<
           ] = await Promise.all([
             AWSTokenListProvider.fromTokenListS3Bucket(chainId, TOKEN_LIST_CACHE_BUCKET!, DEFAULT_TOKEN_LIST),
             CachingTokenListProvider.fromTokenList(chainId, UNSUPPORTED_TOKEN_LIST as TokenList, blockedTokenCache),
-            (await this.instantiateSubgraphProvider(
-              chainId,
-              Protocol.V4,
-              POOL_CACHE_BUCKET_3!,
-              POOL_CACHE_GZIP_KEY!,
-              v4PoolProvider,
-              v4PoolParams
-            )) as V4AWSSubgraphProvider,
+            (chainId === ChainId.CYBER_TESTNET
+              ? (() => {
+                  const staticProvider = new StaticV4SubgraphProvider(chainId, v4PoolProvider, v4PoolParams)
+                  log.info(
+                    {
+                      chainId,
+                      v4PoolParamsCount: v4PoolParams.length,
+                      providerType: 'StaticV4SubgraphProvider',
+                    },
+                    `Using StaticV4SubgraphProvider for CYBER_TESTNET`
+                  )
+                  const originalGetPools = staticProvider.getPools.bind(staticProvider)
+                  staticProvider.getPools = async () => {
+                    log.info(
+                      {
+                        chainId,
+                        v4PoolParamsCount: v4PoolParams.length,
+                      },
+                      `StaticV4SubgraphProvider.getPools() called for CYBER_TESTNET`
+                    )
+                    const pools = await originalGetPools()
+                    log.info(
+                      {
+                        chainId,
+                        poolsCount: pools.length,
+                        poolsSample: pools.slice(0, 3).map((p) => ({
+                          id: p.id,
+                          token0: p.token0.id,
+                          token1: p.token1.id,
+                          feeTier: p.feeTier,
+                        })),
+                      },
+                      `StaticV4SubgraphProvider.getPools() returned ${pools.length} pools for CYBER_TESTNET`
+                    )
+                    return pools
+                  }
+                  return staticProvider as IV4SubgraphProvider
+                })()
+              : ((await this.instantiateSubgraphProvider(
+                  chainId,
+                  Protocol.V4,
+                  POOL_CACHE_BUCKET_3!,
+                  POOL_CACHE_GZIP_KEY!,
+                  v4PoolProvider,
+                  v4PoolParams
+                )) as IV4SubgraphProvider)),
             (await this.instantiateSubgraphProvider(
               chainId,
               Protocol.V3,
@@ -545,6 +610,7 @@ export abstract class InjectorSOR<Router, QueryParams> extends Injector<
             ChainId.SONEIUM,
             ChainId.MONAD,
             ChainId.CELO,
+            ChainId.CYBER_TESTNET,
           ]
 
           // https://linear.app/uniswap/issue/ROUTE-467/tenderly-simulation-during-caching-lambda

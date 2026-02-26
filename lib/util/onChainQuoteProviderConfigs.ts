@@ -1070,6 +1070,7 @@ export const NEW_QUOTER_DEPLOY_BLOCK: { [chainId in ChainId]: number } = {
   [ChainId.MONAD_TESTNET]: -1,
   [ChainId.MONAD]: -1,
   [ChainId.SONEIUM]: -1,
+  [ChainId.CYBER_TESTNET]: -1,
 }
 
 // 0 threshold means it's not deployed yet
@@ -1105,6 +1106,7 @@ export const LIKELY_OUT_OF_GAS_THRESHOLD: { [chainId in ChainId]: number } = {
   [ChainId.MONAD_TESTNET]: 0,
   [ChainId.MONAD]: 0,
   [ChainId.SONEIUM]: 0,
+  [ChainId.CYBER_TESTNET]: 0
 }
 
 // TODO: Move this new addresses to SOR

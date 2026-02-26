@@ -1,4 +1,5 @@
 import { ChainId } from '@uniswap/sdk-core'
+import { ADDRESS_ZERO } from '@uniswap/router-sdk'
 import { extraHooksAddressesOnSepolia } from './hooksAddressesAllowlist'
 
 export const emptyV4FeeTickSpacingsHookAddresses: Array<[number, number, string]> = new Array<
@@ -51,4 +52,7 @@ export const EXTRA_V4_FEE_TICK_SPACINGS_HOOK_ADDRESSES: { [chain in ChainId]: Ar
   [ChainId.MONAD_TESTNET]: emptyV4FeeTickSpacingsHookAddresses,
   [ChainId.MONAD]: emptyV4FeeTickSpacingsHookAddresses,
   [ChainId.SONEIUM]: emptyV4FeeTickSpacingsHookAddresses,
+  [ChainId.CYBER_TESTNET]: [
+    [3000, 60, ADDRESS_ZERO],
+  ],
 }

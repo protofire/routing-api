@@ -30,6 +30,8 @@ export function chainIdToNetworkName(networkId: ChainId): string {
       return 'unichain'
     case ChainId.SONEIUM:
       return 'soneium'
+    case ChainId.CYBER_TESTNET:
+      return 'cyber-testnet'
     default:
       return 'ethereum'
   }
@@ -147,6 +149,9 @@ export function generateProviderUrl(key: string, value: string, chainId: number)
     }
     case 'ALCHEMY_1301': {
       return `https://unichain-sepolia.g.alchemy.com/v2/${tokens[0]}`
+    }
+    case 'WEB3_RPC_GATEWAY_111557560': {
+      return tokens[0]
     }
   }
   throw new Error(`Unknown provider-chainId pair: ${key}`)
