@@ -73,6 +73,9 @@ export class RoutingAPIStack extends cdk.Stack {
       alchemyQueryKey?: string
       alchemyQueryKey2?: string
       graphBaseV4SubgraphId?: string
+      graphXlayerV4Id?: string
+      graphXlayerV3Id?: string
+      graphXLayerV2Id?: string
       graphBearerToken?: string
       uniGraphQLEndpoint: string
       uniGraphQLHeaderOrigin: string
@@ -147,6 +150,9 @@ export class RoutingAPIStack extends cdk.Stack {
       alchemyQueryKey,
       alchemyQueryKey2,
       graphBaseV4SubgraphId,
+      graphXlayerV4Id,
+      graphXlayerV3Id,
+      graphXLayerV2Id,
       graphBearerToken,
       uniGraphQLEndpoint,
       uniGraphQLHeaderOrigin,
@@ -217,6 +223,9 @@ export class RoutingAPIStack extends cdk.Stack {
       alchemyQueryKey,
       alchemyQueryKey2,
       graphBaseV4SubgraphId,
+      graphXlayerV4Id,
+      graphXlayerV3Id,
+      graphXLayerV2Id,
       graphBearerToken,
       goldskyBearerToken,
       goldskyApiKey,
@@ -279,6 +288,7 @@ export class RoutingAPIStack extends cdk.Stack {
     } = new RoutingDatabaseStack(this, 'RoutingDatabaseStack', {})
 
     const { routingLambda, routingLambdaAlias } = new RoutingLambdaStack(this, 'RoutingLambdaStack', {
+      stage,
       poolCacheBucket,
       poolCacheBucket2,
       poolCacheBucket3,
