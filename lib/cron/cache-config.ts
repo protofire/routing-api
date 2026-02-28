@@ -298,21 +298,6 @@ export const chainProtocols = [
   // V2.
   {
     protocol: Protocol.V2,
-    chainId: ChainId.MONAD,
-    timeout: 840000,
-    provider: new V2SubgraphProvider(
-      ChainId.MONAD,
-      5,
-      900000,
-      true,
-      1000,
-      v2TrackedEthThreshold,
-      v2UntrackedUsdThreshold,
-      v2SubgraphUrlOverride(ChainId.MONAD)
-    ), // 1000 is the largest page size supported by thegraph
-  },
-  {
-    protocol: Protocol.V2,
     chainId: ChainId.ARBITRUM_ONE,
     timeout: 90000,
     provider: new V2SubgraphProvider(
