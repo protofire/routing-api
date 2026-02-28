@@ -281,497 +281,109 @@ export interface ChainProtocol {
   eulerHooksProvider?: EulerSwapHooksSubgraphProvider
 }
 
-export const chainProtocols = [
+// Builder functions that only create entries when the subgraph URL is available.
+// When env vars are missing (e.g. during CDK synthesis), entries are skipped
+// instead of creating providers with undefined URLs that throw at module load time.
+
+function makeV3Entry(
+  chainId: ChainId,
+  timeout: number,
+  retries: number,
+  trackedEthThreshold: number,
+  untrackedUsdThreshold: number,
+  bearerToken?: string
+): ChainProtocol | null {
+  const url = v3SubgraphUrlOverride(chainId)
+  if (!url) return null
+  return {
+    protocol: Protocol.V3,
+    chainId,
+    timeout,
+    provider: new V3SubgraphProvider(chainId, retries, timeout, true, trackedEthThreshold, untrackedUsdThreshold, url, bearerToken),
+  }
+}
+
+function makeV2Entry(
+  chainId: ChainId,
+  timeout: number,
+  retries: number,
+  pageSize: number,
+  trackedEthThreshold: number,
+  untrackedUsdThreshold: number,
+  bearerToken?: string,
+  providerTimeout?: number,
+): ChainProtocol | null {
+  const url = v2SubgraphUrlOverride(chainId)
+  if (!url) return null
+  return {
+    protocol: Protocol.V2,
+    chainId,
+    timeout,
+    provider: new V2SubgraphProvider(chainId, retries, providerTimeout ?? timeout, true, pageSize, trackedEthThreshold, untrackedUsdThreshold, url, bearerToken),
+  }
+}
+
+function makeV4Entry(
+  chainId: ChainId,
+  timeout: number,
+  retries: number,
+  trackedEthThreshold: number,
+  zoraTrackedEthThreshold: number,
+  hooksForLowTvlFiltering: Set<string>,
+  untrackedUsdThreshold: number,
+  bearerToken?: string,
+  includeEulerHooks = false,
+): ChainProtocol | null {
+  const url = v4SubgraphUrlOverride(chainId)
+  if (!url) return null
+  const entry: ChainProtocol = {
+    protocol: Protocol.V4,
+    chainId,
+    timeout,
+    provider: new V4SubgraphProvider(
+      chainId, retries, timeout, true,
+      trackedEthThreshold, zoraTrackedEthThreshold, hooksForLowTvlFiltering,
+      untrackedUsdThreshold, url, bearerToken
+    ),
+  }
+  if (includeEulerHooks) {
+    entry.eulerHooksProvider = new EulerSwapHooksSubgraphProvider(chainId, retries, timeout, true, url)
+  }
+  return entry
+}
+
+export const chainProtocols: ChainProtocol[] = [
   // V3.
-  {
-    protocol: Protocol.V3,
-    chainId: ChainId.MONAD,
-    timeout: 90000,
-    provider: new V3SubgraphProvider(
-      ChainId.MONAD,
-      3,
-      90000,
-      true,
-      v3TrackedEthThreshold,
-      v3UntrackedUsdThreshold,
-      v3SubgraphUrlOverride(ChainId.MONAD)
-    ),
-  },
-  {
-    protocol: Protocol.V3,
-    chainId: ChainId.XLAYER,
-    timeout: 90000,
-    provider: new V3SubgraphProvider(
-      ChainId.XLAYER,
-      3,
-      90000,
-      true,
-      v3TrackedEthThreshold,
-      v3UntrackedUsdThreshold,
-      v3SubgraphUrlOverride(ChainId.XLAYER),
-      process.env.GRAPH_BEARER_TOKEN
-    ),
-  },
+  makeV3Entry(ChainId.MONAD, 90000, 3, v3TrackedEthThreshold, v3UntrackedUsdThreshold),
+  makeV3Entry(ChainId.XLAYER, 90000, 3, v3TrackedEthThreshold, v3UntrackedUsdThreshold, process.env.GRAPH_BEARER_TOKEN),
   // V2.
-  {
-    protocol: Protocol.V2,
-    chainId: ChainId.ARBITRUM_ONE,
-    timeout: 90000,
-    provider: new V2SubgraphProvider(
-      ChainId.ARBITRUM_ONE,
-      3,
-      90000,
-      true,
-      1000,
-      v2TrackedEthThreshold,
-      v2UntrackedUsdThreshold,
-      v2SubgraphUrlOverride(ChainId.ARBITRUM_ONE)
-    ),
-  },
-  {
-    protocol: Protocol.V2,
-    chainId: ChainId.POLYGON,
-    timeout: 90000,
-    provider: new V2SubgraphProvider(
-      ChainId.POLYGON,
-      3,
-      90000,
-      true,
-      1000,
-      v2TrackedEthThreshold,
-      v2UntrackedUsdThreshold,
-      v2SubgraphUrlOverride(ChainId.POLYGON)
-    ),
-  },
-  {
-    protocol: Protocol.V2,
-    chainId: ChainId.OPTIMISM,
-    timeout: 90000,
-    provider: new V2SubgraphProvider(
-      ChainId.OPTIMISM,
-      3,
-      90000,
-      true,
-      1000,
-      v2TrackedEthThreshold,
-      v2UntrackedUsdThreshold,
-      v2SubgraphUrlOverride(ChainId.OPTIMISM)
-    ),
-  },
-  {
-    protocol: Protocol.V2,
-    chainId: ChainId.BNB,
-    timeout: 90000,
-    provider: new V2SubgraphProvider(
-      ChainId.BNB,
-      3,
-      90000,
-      true,
-      1000,
-      v2TrackedEthThreshold,
-      v2UntrackedUsdThreshold,
-      v2SubgraphUrlOverride(ChainId.BNB)
-    ),
-  },
-  {
-    protocol: Protocol.V2,
-    chainId: ChainId.AVALANCHE,
-    timeout: 90000,
-    provider: new V2SubgraphProvider(
-      ChainId.AVALANCHE,
-      3,
-      90000,
-      true,
-      1000,
-      v2TrackedEthThreshold,
-      v2UntrackedUsdThreshold,
-      v2SubgraphUrlOverride(ChainId.AVALANCHE)
-    ),
-  },
-  {
-    protocol: Protocol.V2,
-    chainId: ChainId.BASE,
-    timeout: 840000,
-    provider: new V2SubgraphProvider(
-      ChainId.BASE,
-      5,
-      900000,
-      true,
-      10000,
-      v2BaseTrackedEthThreshold,
-      v2UntrackedUsdThreshold,
-      v2SubgraphUrlOverride(ChainId.BASE)
-    ),
-  },
-  {
-    protocol: Protocol.V2,
-    chainId: ChainId.BLAST,
-    timeout: 90000,
-    provider: new V2SubgraphProvider(
-      ChainId.BLAST,
-      3,
-      90000,
-      true,
-      1000,
-      v2TrackedEthThreshold,
-      v2UntrackedUsdThreshold,
-      v2SubgraphUrlOverride(ChainId.BLAST)
-    ),
-  },
-  {
-    protocol: Protocol.V2,
-    chainId: ChainId.WORLDCHAIN,
-    timeout: 90000,
-    provider: new V2SubgraphProvider(
-      ChainId.WORLDCHAIN,
-      3,
-      90000,
-      true,
-      1000,
-      v2TrackedEthThreshold,
-      v2UntrackedUsdThreshold,
-      v2SubgraphUrlOverride(ChainId.WORLDCHAIN)
-    ),
-  },
-  {
-    protocol: Protocol.V2,
-    chainId: ChainId.MONAD_TESTNET,
-    timeout: 90000,
-    provider: new V2SubgraphProvider(
-      ChainId.MONAD_TESTNET,
-      3,
-      90000,
-      true,
-      1000,
-      v2TrackedEthThreshold,
-      v2UntrackedUsdThreshold,
-      v2SubgraphUrlOverride(ChainId.MONAD_TESTNET)
-    ),
-  },
-  {
-    protocol: Protocol.V2,
-    chainId: ChainId.UNICHAIN,
-    timeout: 90000,
-    provider: new V2SubgraphProvider(
-      ChainId.UNICHAIN,
-      3,
-      90000,
-      true,
-      1000,
-      v2TrackedEthThreshold,
-      v2UntrackedUsdThreshold,
-      v2SubgraphUrlOverride(ChainId.UNICHAIN)
-    ),
-  },
-  {
-    protocol: Protocol.V2,
-    chainId: ChainId.SONEIUM,
-    timeout: 90000,
-    provider: new V2SubgraphProvider(
-      ChainId.SONEIUM,
-      3,
-      90000,
-      true,
-      1000,
-      v2TrackedEthThreshold,
-      v2UntrackedUsdThreshold,
-      v2SubgraphUrlOverride(ChainId.SONEIUM)
-    ),
-  },
-  {
-    protocol: Protocol.V2,
-    chainId: ChainId.MONAD,
-    timeout: 90000,
-    provider: new V2SubgraphProvider(
-      ChainId.MONAD,
-      3,
-      90000,
-      true,
-      1000,
-      v2TrackedEthThreshold,
-      v2UntrackedUsdThreshold,
-      v2SubgraphUrlOverride(ChainId.MONAD),
-      process.env.GOLD_SKY_BEARER_TOKEN
-    ),
-  },
-  {
-    protocol: Protocol.V2,
-    chainId: ChainId.XLAYER,
-    timeout: 90000,
-    provider: new V2SubgraphProvider(
-      ChainId.XLAYER,
-      3,
-      90000,
-      true,
-      1000,
-      v2TrackedEthThreshold,
-      v2UntrackedUsdThreshold,
-      v2SubgraphUrlOverride(ChainId.XLAYER),
-      process.env.GRAPH_BEARER_TOKEN
-    ),
-  },
-  // V4
-  {
-    protocol: Protocol.V4,
-    chainId: ChainId.SEPOLIA,
-    timeout: 90000,
-    provider: new V4SubgraphProvider(
-      ChainId.SEPOLIA,
-      3,
-      90000,
-      true,
-      v4TrackedEthThreshold,
-      v4BaseZoraTrackedEthThreshold,
-      HOOKS_FOR_V4_SUBGRAPH_LOW_TVL_FILTERING,
-      v4UntrackedUsdThreshold,
-      v4SubgraphUrlOverride(ChainId.SEPOLIA)
-    ),
-  },
-  {
-    protocol: Protocol.V4,
-    chainId: ChainId.ARBITRUM_ONE,
-    timeout: 90000,
-    provider: new V4SubgraphProvider(
-      ChainId.ARBITRUM_ONE,
-      3,
-      90000,
-      true,
-      v4TrackedEthThreshold,
-      v4BaseZoraTrackedEthThreshold,
-      HOOKS_FOR_V4_SUBGRAPH_LOW_TVL_FILTERING,
-      v4UntrackedUsdThreshold,
-      v4SubgraphUrlOverride(ChainId.ARBITRUM_ONE)
-    ),
-  },
-  {
-    protocol: Protocol.V4,
-    chainId: ChainId.BASE,
-    timeout: 90000,
-    provider: new V4SubgraphProvider(
-      ChainId.BASE,
-      3,
-      90000,
-      true,
-      v4BaseTrackedEthThreshold,
-      v4BaseZoraTrackedEthThreshold,
-      HOOKS_FOR_V4_SUBGRAPH_LOW_TVL_FILTERING,
-      v4UntrackedUsdThreshold,
-      v4SubgraphUrlOverride(ChainId.BASE),
-      process.env.GRAPH_BEARER_TOKEN
-    ),
-  },
-  {
-    protocol: Protocol.V4,
-    chainId: ChainId.POLYGON,
-    timeout: 90000,
-    provider: new V4SubgraphProvider(
-      ChainId.POLYGON,
-      3,
-      90000,
-      true,
-      v4TrackedEthThreshold,
-      v4BaseZoraTrackedEthThreshold,
-      HOOKS_FOR_V4_SUBGRAPH_LOW_TVL_FILTERING,
-      v4UntrackedUsdThreshold,
-      v4SubgraphUrlOverride(ChainId.POLYGON)
-    ),
-  },
-  {
-    protocol: Protocol.V4,
-    chainId: ChainId.WORLDCHAIN,
-    timeout: 90000,
-    provider: new V4SubgraphProvider(
-      ChainId.WORLDCHAIN,
-      3,
-      90000,
-      true,
-      v4TrackedEthThreshold,
-      v4BaseZoraTrackedEthThreshold,
-      HOOKS_FOR_V4_SUBGRAPH_LOW_TVL_FILTERING,
-      v4UntrackedUsdThreshold,
-      v4SubgraphUrlOverride(ChainId.WORLDCHAIN)
-    ),
-  },
-  {
-    protocol: Protocol.V4,
-    chainId: ChainId.ZORA,
-    timeout: 90000,
-    provider: new V4SubgraphProvider(
-      ChainId.ZORA,
-      3,
-      90000,
-      true,
-      v4TrackedEthThreshold,
-      v4BaseZoraTrackedEthThreshold,
-      HOOKS_FOR_V4_SUBGRAPH_LOW_TVL_FILTERING,
-      v4UntrackedUsdThreshold,
-      v4SubgraphUrlOverride(ChainId.ZORA)
-    ),
-  },
-  {
-    protocol: Protocol.V4,
-    chainId: ChainId.UNICHAIN,
-    timeout: 90000,
-    provider: new V4SubgraphProvider(
-      ChainId.UNICHAIN,
-      3,
-      90000,
-      true,
-      v4TrackedEthThreshold,
-      v4BaseZoraTrackedEthThreshold,
-      HOOKS_FOR_V4_SUBGRAPH_LOW_TVL_FILTERING,
-      v4UntrackedUsdThreshold,
-      v4SubgraphUrlOverride(ChainId.UNICHAIN)
-    ),
-    eulerHooksProvider: new EulerSwapHooksSubgraphProvider(
-      ChainId.UNICHAIN,
-      3,
-      90000,
-      true,
-      v4SubgraphUrlOverride(ChainId.UNICHAIN)
-    ),
-  },
-  {
-    protocol: Protocol.V4,
-    chainId: ChainId.BLAST,
-    timeout: 90000,
-    provider: new V4SubgraphProvider(
-      ChainId.BLAST,
-      3,
-      90000,
-      true,
-      v4TrackedEthThreshold,
-      v4BaseZoraTrackedEthThreshold,
-      HOOKS_FOR_V4_SUBGRAPH_LOW_TVL_FILTERING,
-      v4UntrackedUsdThreshold,
-      v4SubgraphUrlOverride(ChainId.BLAST)
-    ),
-  },
-  {
-    protocol: Protocol.V4,
-    chainId: ChainId.MAINNET,
-    timeout: 90000,
-    provider: new V4SubgraphProvider(
-      ChainId.MAINNET,
-      3,
-      90000,
-      true,
-      v4TrackedEthThreshold,
-      v4BaseZoraTrackedEthThreshold,
-      HOOKS_FOR_V4_SUBGRAPH_LOW_TVL_FILTERING,
-      v4UntrackedUsdThreshold,
-      v4SubgraphUrlOverride(ChainId.MAINNET)
-    ),
-    eulerHooksProvider: new EulerSwapHooksSubgraphProvider(
-      ChainId.MAINNET,
-      3,
-      90000,
-      true,
-      v4SubgraphUrlOverride(ChainId.MAINNET)
-    ),
-  },
-  {
-    protocol: Protocol.V4,
-    chainId: ChainId.SONEIUM,
-    timeout: 90000,
-    provider: new V4SubgraphProvider(
-      ChainId.SONEIUM,
-      3,
-      90000,
-      true,
-      v4TrackedEthThreshold,
-      v4BaseZoraTrackedEthThreshold,
-      HOOKS_FOR_V4_SUBGRAPH_LOW_TVL_FILTERING,
-      v4UntrackedUsdThreshold,
-      v4SubgraphUrlOverride(ChainId.SONEIUM)
-    ),
-  },
-  {
-    protocol: Protocol.V4,
-    chainId: ChainId.OPTIMISM,
-    timeout: 90000,
-    provider: new V4SubgraphProvider(
-      ChainId.OPTIMISM,
-      3,
-      90000,
-      true,
-      v4TrackedEthThreshold,
-      v4BaseZoraTrackedEthThreshold,
-      HOOKS_FOR_V4_SUBGRAPH_LOW_TVL_FILTERING,
-      v4UntrackedUsdThreshold,
-      v4SubgraphUrlOverride(ChainId.OPTIMISM)
-    ),
-  },
-  {
-    protocol: Protocol.V4,
-    chainId: ChainId.BNB,
-    timeout: 90000,
-    provider: new V4SubgraphProvider(
-      ChainId.BNB,
-      3,
-      90000,
-      true,
-      v4TrackedEthThreshold,
-      v4BaseZoraTrackedEthThreshold,
-      HOOKS_FOR_V4_SUBGRAPH_LOW_TVL_FILTERING,
-      v4UntrackedUsdThreshold,
-      v4SubgraphUrlOverride(ChainId.BNB)
-    ),
-  },
-  {
-    protocol: Protocol.V4,
-    chainId: ChainId.MONAD,
-    timeout: 90000,
-    provider: new V4SubgraphProvider(
-      ChainId.MONAD,
-      3,
-      90000,
-      true,
-      v4TrackedEthThreshold,
-      v4BaseZoraTrackedEthThreshold,
-      HOOKS_FOR_V4_SUBGRAPH_LOW_TVL_FILTERING,
-      v4UntrackedUsdThreshold,
-      v4SubgraphUrlOverride(ChainId.MONAD)
-    ),
-    eulerHooksProvider: new EulerSwapHooksSubgraphProvider(
-      ChainId.MONAD,
-      3,
-      90000,
-      true,
-      v4SubgraphUrlOverride(ChainId.MONAD)
-    ),
-  },
-  {
-    protocol: Protocol.V4,
-    chainId: ChainId.XLAYER,
-    timeout: 90000,
-    provider: new V4SubgraphProvider(
-      ChainId.XLAYER,
-      3,
-      90000,
-      true,
-      v4TrackedEthThreshold,
-      v4BaseZoraTrackedEthThreshold,
-      HOOKS_FOR_V4_SUBGRAPH_LOW_TVL_FILTERING,
-      v4UntrackedUsdThreshold,
-      v4SubgraphUrlOverride(ChainId.XLAYER),
-      process.env.GRAPH_BEARER_TOKEN
-    ),
-  },
-  {
-    protocol: Protocol.V4,
-    chainId: ChainId.AVALANCHE,
-    timeout: 90000,
-    provider: new V4SubgraphProvider(
-      ChainId.AVALANCHE,
-      3,
-      90000,
-      true,
-      v4TrackedEthThreshold,
-      v4BaseZoraTrackedEthThreshold,
-      HOOKS_FOR_V4_SUBGRAPH_LOW_TVL_FILTERING,
-      v4UntrackedUsdThreshold,
-      v4SubgraphUrlOverride(ChainId.AVALANCHE)
-    ),
-  },
-]
+  makeV2Entry(ChainId.ARBITRUM_ONE, 90000, 3, 1000, v2TrackedEthThreshold, v2UntrackedUsdThreshold),
+  makeV2Entry(ChainId.POLYGON, 90000, 3, 1000, v2TrackedEthThreshold, v2UntrackedUsdThreshold),
+  makeV2Entry(ChainId.OPTIMISM, 90000, 3, 1000, v2TrackedEthThreshold, v2UntrackedUsdThreshold),
+  makeV2Entry(ChainId.BNB, 90000, 3, 1000, v2TrackedEthThreshold, v2UntrackedUsdThreshold),
+  makeV2Entry(ChainId.AVALANCHE, 90000, 3, 1000, v2TrackedEthThreshold, v2UntrackedUsdThreshold),
+  makeV2Entry(ChainId.BASE, 840000, 5, 10000, v2BaseTrackedEthThreshold, v2UntrackedUsdThreshold, undefined, 900000),
+  makeV2Entry(ChainId.BLAST, 90000, 3, 1000, v2TrackedEthThreshold, v2UntrackedUsdThreshold),
+  makeV2Entry(ChainId.WORLDCHAIN, 90000, 3, 1000, v2TrackedEthThreshold, v2UntrackedUsdThreshold),
+  makeV2Entry(ChainId.MONAD_TESTNET, 90000, 3, 1000, v2TrackedEthThreshold, v2UntrackedUsdThreshold),
+  makeV2Entry(ChainId.UNICHAIN, 90000, 3, 1000, v2TrackedEthThreshold, v2UntrackedUsdThreshold),
+  makeV2Entry(ChainId.SONEIUM, 90000, 3, 1000, v2TrackedEthThreshold, v2UntrackedUsdThreshold),
+  makeV2Entry(ChainId.MONAD, 90000, 3, 1000, v2TrackedEthThreshold, v2UntrackedUsdThreshold, process.env.GOLD_SKY_BEARER_TOKEN),
+  makeV2Entry(ChainId.XLAYER, 90000, 3, 1000, v2TrackedEthThreshold, v2UntrackedUsdThreshold, process.env.GRAPH_BEARER_TOKEN),
+  // V4.
+  makeV4Entry(ChainId.SEPOLIA, 90000, 3, v4TrackedEthThreshold, v4BaseZoraTrackedEthThreshold, HOOKS_FOR_V4_SUBGRAPH_LOW_TVL_FILTERING, v4UntrackedUsdThreshold),
+  makeV4Entry(ChainId.ARBITRUM_ONE, 90000, 3, v4TrackedEthThreshold, v4BaseZoraTrackedEthThreshold, HOOKS_FOR_V4_SUBGRAPH_LOW_TVL_FILTERING, v4UntrackedUsdThreshold),
+  makeV4Entry(ChainId.BASE, 90000, 3, v4BaseTrackedEthThreshold, v4BaseZoraTrackedEthThreshold, HOOKS_FOR_V4_SUBGRAPH_LOW_TVL_FILTERING, v4UntrackedUsdThreshold, process.env.GRAPH_BEARER_TOKEN),
+  makeV4Entry(ChainId.POLYGON, 90000, 3, v4TrackedEthThreshold, v4BaseZoraTrackedEthThreshold, HOOKS_FOR_V4_SUBGRAPH_LOW_TVL_FILTERING, v4UntrackedUsdThreshold),
+  makeV4Entry(ChainId.WORLDCHAIN, 90000, 3, v4TrackedEthThreshold, v4BaseZoraTrackedEthThreshold, HOOKS_FOR_V4_SUBGRAPH_LOW_TVL_FILTERING, v4UntrackedUsdThreshold),
+  makeV4Entry(ChainId.ZORA, 90000, 3, v4TrackedEthThreshold, v4BaseZoraTrackedEthThreshold, HOOKS_FOR_V4_SUBGRAPH_LOW_TVL_FILTERING, v4UntrackedUsdThreshold),
+  makeV4Entry(ChainId.UNICHAIN, 90000, 3, v4TrackedEthThreshold, v4BaseZoraTrackedEthThreshold, HOOKS_FOR_V4_SUBGRAPH_LOW_TVL_FILTERING, v4UntrackedUsdThreshold, undefined, true),
+  makeV4Entry(ChainId.BLAST, 90000, 3, v4TrackedEthThreshold, v4BaseZoraTrackedEthThreshold, HOOKS_FOR_V4_SUBGRAPH_LOW_TVL_FILTERING, v4UntrackedUsdThreshold),
+  makeV4Entry(ChainId.MAINNET, 90000, 3, v4TrackedEthThreshold, v4BaseZoraTrackedEthThreshold, HOOKS_FOR_V4_SUBGRAPH_LOW_TVL_FILTERING, v4UntrackedUsdThreshold, undefined, true),
+  makeV4Entry(ChainId.SONEIUM, 90000, 3, v4TrackedEthThreshold, v4BaseZoraTrackedEthThreshold, HOOKS_FOR_V4_SUBGRAPH_LOW_TVL_FILTERING, v4UntrackedUsdThreshold),
+  makeV4Entry(ChainId.OPTIMISM, 90000, 3, v4TrackedEthThreshold, v4BaseZoraTrackedEthThreshold, HOOKS_FOR_V4_SUBGRAPH_LOW_TVL_FILTERING, v4UntrackedUsdThreshold),
+  makeV4Entry(ChainId.BNB, 90000, 3, v4TrackedEthThreshold, v4BaseZoraTrackedEthThreshold, HOOKS_FOR_V4_SUBGRAPH_LOW_TVL_FILTERING, v4UntrackedUsdThreshold),
+  makeV4Entry(ChainId.MONAD, 90000, 3, v4TrackedEthThreshold, v4BaseZoraTrackedEthThreshold, HOOKS_FOR_V4_SUBGRAPH_LOW_TVL_FILTERING, v4UntrackedUsdThreshold, undefined, true),
+  makeV4Entry(ChainId.XLAYER, 90000, 3, v4TrackedEthThreshold, v4BaseZoraTrackedEthThreshold, HOOKS_FOR_V4_SUBGRAPH_LOW_TVL_FILTERING, v4UntrackedUsdThreshold, process.env.GRAPH_BEARER_TOKEN),
+  makeV4Entry(ChainId.AVALANCHE, 90000, 3, v4TrackedEthThreshold, v4BaseZoraTrackedEthThreshold, HOOKS_FOR_V4_SUBGRAPH_LOW_TVL_FILTERING, v4UntrackedUsdThreshold),
+].filter((entry): entry is ChainProtocol => entry !== null)
