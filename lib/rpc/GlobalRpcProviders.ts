@@ -26,19 +26,29 @@ export class GlobalRpcProviders {
       )
     }
     const prodConfig: ProdConfig = validation.value as ProdConfig
+    // Filter out chains whose required env vars are not defined, instead of
+    // crashing the entire Lambda. Chains without RPC config will fall back to
+    // the WEB3_RPC_<chainId> env var check in injector-sor.ts (line 212).
+    const validConfigs: ProdConfig = []
     for (let chainConfig of prodConfig) {
       if (!chainConfig.providerUrls) {
+        validConfigs.push(chainConfig)
         continue
       }
+      let allUrlsDefined = true
       for (let i = 0; i < chainConfig.providerUrls!.length; i++) {
         const urlEnvVar = chainConfig.providerUrls[i]
         if (process.env[urlEnvVar] === undefined) {
-          throw new Error(`Environmental variable ${urlEnvVar} isn't defined!`)
+          allUrlsDefined = false
+          break
         }
         chainConfig.providerUrls[i] = generateProviderUrl(urlEnvVar, process.env[urlEnvVar]!, chainConfig.chainId)
       }
+      if (allUrlsDefined) {
+        validConfigs.push(chainConfig)
+      }
     }
-    return prodConfig
+    return validConfigs
   }
 
   private static initGlobalSingleRpcProviders(
