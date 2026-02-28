@@ -130,38 +130,53 @@ export const HOOKS_FOR_V4_SUBGRAPH_LOW_TVL_FILTERING = new Set([
   ...CLANKER_HOOKS_FOR_V4_SUBGRAPH_FILTERING,
 ])
 
+// Helper to build a subgraph URL only when the env var is defined.
+// Returns undefined when the env var is missing, so the provider can fall back gracefully
+// instead of making requests to a malformed URL (e.g. ".../id/undefined").
+function goldskyUrl(envVar: string | undefined, base = 'https://api.aws-us-east-1.goldsky.com/c/uniswap2/gn/subgraphs/id'): string | undefined {
+  return envVar ? `${base}/${envVar}` : undefined
+}
+
+function theGraphUrl(envVar: string | undefined): string | undefined {
+  return envVar ? `https://gateway.thegraph.com/api/subgraphs/id/${envVar}` : undefined
+}
+
+function goldskyPrivateUrl(apiKey: string | undefined, subgraphPath: string): string | undefined {
+  return apiKey ? `https://api.goldsky.com/api/private/${apiKey}/subgraphs/${subgraphPath}` : undefined
+}
+
 export const v4SubgraphUrlOverride = (chainId: ChainId) => {
   switch (chainId) {
     case ChainId.SEPOLIA:
-      return `https://api.aws-us-east-1.goldsky.com/c/uniswap2/gn/subgraphs/id/${process.env.GOLD_SKY_ETHEREUM_SEPOLIA_V4_ID}`
+      return goldskyUrl(process.env.GOLD_SKY_ETHEREUM_SEPOLIA_V4_ID)
     case ChainId.ARBITRUM_ONE:
-      return `https://api.aws-us-east-1.goldsky.com/c/uniswap2/gn/subgraphs/id/${process.env.GOLD_SKY_ARBITRUM_V4_ID}`
+      return goldskyUrl(process.env.GOLD_SKY_ARBITRUM_V4_ID)
     case ChainId.BASE:
-      return `https://gateway.thegraph.com/api/subgraphs/id/${process.env.GRAPH_BASE_V4_SUBGRAPH_ID}`
+      return theGraphUrl(process.env.GRAPH_BASE_V4_SUBGRAPH_ID)
     case ChainId.POLYGON:
-      return `https://api.aws-us-east-1.goldsky.com/c/uniswap2/gn/subgraphs/id/${process.env.GOLD_SKY_POLYGON_V4_ID}`
+      return goldskyUrl(process.env.GOLD_SKY_POLYGON_V4_ID)
     case ChainId.WORLDCHAIN:
-      return `https://api.aws-us-east-1.goldsky.com/c/uniswap2/gn/subgraphs/id/${process.env.GOLD_SKY_WORLDCHAIN_V4_ID}`
+      return goldskyUrl(process.env.GOLD_SKY_WORLDCHAIN_V4_ID)
     case ChainId.ZORA:
-      return `https://api.aws-us-east-1.goldsky.com/c/uniswap2/gn/subgraphs/id/${process.env.GOLD_SKY_ZORA_V4_ID}`
+      return goldskyUrl(process.env.GOLD_SKY_ZORA_V4_ID)
     case ChainId.UNICHAIN:
-      return `https://api.aws-us-east-1.goldsky.com/c/uniswap2/gn/subgraphs/id/${process.env.GOLD_SKY_UNICHAIN_V4_ID}`
+      return goldskyUrl(process.env.GOLD_SKY_UNICHAIN_V4_ID)
     case ChainId.BNB:
-      return `https://api.aws-us-east-1.goldsky.com/c/uniswap2/gn/subgraphs/id/${process.env.GOLD_SKY_BNB_V4_ID}`
+      return goldskyUrl(process.env.GOLD_SKY_BNB_V4_ID)
     case ChainId.BLAST:
-      return `https://api.aws-us-east-1.goldsky.com/c/uniswap2/gn/subgraphs/id/${process.env.GOLD_SKY_BLAST_V4_ID}`
+      return goldskyUrl(process.env.GOLD_SKY_BLAST_V4_ID)
     case ChainId.MAINNET:
-      return `https://api.aws-us-east-1.goldsky.com/c/uniswap2/gn/subgraphs/id/${process.env.GOLD_SKY_ETHEREUM_V4_ID}`
+      return goldskyUrl(process.env.GOLD_SKY_ETHEREUM_V4_ID)
     case ChainId.SONEIUM:
-      return `https://api.aws-us-east-1.goldsky.com/c/uniswap2/gn/subgraphs/id/${process.env.GOLD_SKY_SONEIUM_V4_ID}`
+      return goldskyUrl(process.env.GOLD_SKY_SONEIUM_V4_ID)
     case ChainId.OPTIMISM:
-      return `https://api.aws-us-east-1.goldsky.com/c/uniswap2/gn/subgraphs/id/${process.env.GOLD_SKY_OPTIMISM_V4_ID}`
+      return goldskyUrl(process.env.GOLD_SKY_OPTIMISM_V4_ID)
     case ChainId.MONAD:
-      return `https://api.goldsky.com/api/private/${process.env.GOLD_SKY_API_KEY}/subgraphs/uniswap-v4-monad/prod/gn`
+      return goldskyPrivateUrl(process.env.GOLD_SKY_API_KEY, 'uniswap-v4-monad/prod/gn')
     case ChainId.XLAYER:
-      return `https://gateway.thegraph.com/api/subgraphs/id/${process.env.GRAPH_XLAYER_V4_ID}`
+      return theGraphUrl(process.env.GRAPH_XLAYER_V4_ID)
     case ChainId.AVALANCHE:
-      return `https://api.aws-us-east-1.goldsky.com/c/uniswap2/gn/subgraphs/id/${process.env.GOLD_SKY_AVALANCHE_V4_ID}`
+      return goldskyUrl(process.env.GOLD_SKY_AVALANCHE_V4_ID)
     default:
       return undefined
   }
@@ -170,74 +185,76 @@ export const v4SubgraphUrlOverride = (chainId: ChainId) => {
 export const v3SubgraphUrlOverride = (chainId: ChainId) => {
   switch (chainId) {
     // case ChainId.MAINNET:
-    //   return `https://api.aws-us-east-1.goldsky.com/c/uniswap2/gn/subgraphs/id/${process.env.GOLD_SKY_ETHEREUM_V3_ID}`
+    //   return goldskyUrl(process.env.GOLD_SKY_ETHEREUM_V3_ID)
     case ChainId.ARBITRUM_ONE:
-      return `https://api.aws-us-east-1.goldsky.com/c/uniswap2/gn/subgraphs/id/${process.env.GOLD_SKY_ARBITRUM_V3_ID}`
+      return goldskyUrl(process.env.GOLD_SKY_ARBITRUM_V3_ID)
     case ChainId.POLYGON:
-      return `https://api.aws-us-east-1.goldsky.com/c/uniswap2/gn/subgraphs/id/${process.env.GOLD_SKY_POLYGON_V3_ID}`
+      return goldskyUrl(process.env.GOLD_SKY_POLYGON_V3_ID)
     case ChainId.OPTIMISM:
-      return `https://api.aws-us-east-1.goldsky.com/c/uniswap2/gn/subgraphs/id/${process.env.GOLD_SKY_OPTIMISM_V3_ID}`
+      return goldskyUrl(process.env.GOLD_SKY_OPTIMISM_V3_ID)
     case ChainId.AVALANCHE:
-      return `https://api.aws-us-east-1.goldsky.com/c/uniswap2/gn/subgraphs/id/${process.env.GOLD_SKY_AVALANCHE_V3_ID}`
+      return goldskyUrl(process.env.GOLD_SKY_AVALANCHE_V3_ID)
     case ChainId.BNB:
-      return `https://api.aws-us-east-1.goldsky.com/c/uniswap2/gn/subgraphs/id/${process.env.GOLD_SKY_BNB_V3_ID}`
+      return goldskyUrl(process.env.GOLD_SKY_BNB_V3_ID)
     case ChainId.BLAST:
-      return `https://api.aws-us-east-1.goldsky.com/c/uniswap2/gn/subgraphs/id/${process.env.GOLD_SKY_BLAST_V3_ID}`
+      return goldskyUrl(process.env.GOLD_SKY_BLAST_V3_ID)
     case ChainId.BASE:
-      return `https://api.aws-us-east-1.goldsky.com/c/uniswap2/gn/subgraphs/id/${process.env.GOLD_SKY_BASE_V3_ID}`
+      return goldskyUrl(process.env.GOLD_SKY_BASE_V3_ID)
     case ChainId.CELO:
-      return `https://api.aws-us-east-1.goldsky.com/c/uniswap2/gn/subgraphs/id/${process.env.GOLD_SKY_CELO_V3_ID}`
+      return goldskyUrl(process.env.GOLD_SKY_CELO_V3_ID)
     case ChainId.WORLDCHAIN:
-      return `https://api.aws-us-east-1.goldsky.com/c/uniswap2/gn/subgraphs/id/${process.env.GOLD_SKY_WORLDCHAIN_V3_ID}`
+      return goldskyUrl(process.env.GOLD_SKY_WORLDCHAIN_V3_ID)
     case ChainId.UNICHAIN_SEPOLIA:
-      return `https://api.aws-us-east-1.goldsky.com/c/uniswap2/gn/subgraphs/id/${process.env.GOLD_SKY_ASTROCHAIN_SEPOLIA_V3_ID}`
+      return goldskyUrl(process.env.GOLD_SKY_ASTROCHAIN_SEPOLIA_V3_ID)
     case ChainId.UNICHAIN:
-      return `https://api.aws-us-east-1.goldsky.com/c/uniswap2/gn/subgraphs/id/${process.env.GOLD_SKY_UNICHAIN_V3_ID}`
+      return goldskyUrl(process.env.GOLD_SKY_UNICHAIN_V3_ID)
     case ChainId.ZORA:
-      return `https://api.aws-us-east-1.goldsky.com/c/uniswap2/gn/subgraphs/id/${process.env.GOLD_SKY_ZORA_V3_ID}`
+      return goldskyUrl(process.env.GOLD_SKY_ZORA_V3_ID)
     case ChainId.SONEIUM:
-      return `https://api.aws-us-east-1.goldsky.com/c/uniswap2/gn/subgraphs/id/${process.env.GOLD_SKY_SONEIUM_V3_ID}`
+      return goldskyUrl(process.env.GOLD_SKY_SONEIUM_V3_ID)
     case ChainId.MONAD:
-      return `https://api.goldsky.com/api/private/${process.env.GOLD_SKY_API_KEY}/subgraphs/uniswap-v3-monad/prod/gn`
+      return goldskyPrivateUrl(process.env.GOLD_SKY_API_KEY, 'uniswap-v3-monad/prod/gn')
     case ChainId.XLAYER:
-      return `https://gateway.thegraph.com/api/subgraphs/id/${process.env.GRAPH_XLAYER_V3_ID}`
+      return theGraphUrl(process.env.GRAPH_XLAYER_V3_ID)
     default:
       return undefined
   }
 }
 
+const GOLDSKY_V2_BASE = 'https://api.aws-us-east-1.goldsky.com/c/uniswap/gn/subgraphs/id'
+
 export const v2SubgraphUrlOverride = (chainId: ChainId) => {
   switch (chainId) {
     // case ChainId.MAINNET:
-    //   return `https://api.aws-us-east-1.goldsky.com/c/uniswap/gn/subgraphs/id/${process.env.GOLD_SKY_ETHEREUM_V2_ID}`
+    //   return goldskyUrl(process.env.GOLD_SKY_ETHEREUM_V2_ID, GOLDSKY_V2_BASE)
     case ChainId.ARBITRUM_ONE:
-      return `https://api.aws-us-east-1.goldsky.com/c/uniswap/gn/subgraphs/id/${process.env.GOLD_SKY_ARBITRUM_V2_ID}`
+      return goldskyUrl(process.env.GOLD_SKY_ARBITRUM_V2_ID, GOLDSKY_V2_BASE)
     case ChainId.POLYGON:
-      return `https://api.aws-us-east-1.goldsky.com/c/uniswap/gn/subgraphs/id/${process.env.GOLD_SKY_POLYGON_V2_ID}`
+      return goldskyUrl(process.env.GOLD_SKY_POLYGON_V2_ID, GOLDSKY_V2_BASE)
     case ChainId.OPTIMISM:
-      return `https://api.aws-us-east-1.goldsky.com/c/uniswap/gn/subgraphs/id/${process.env.GOLD_SKY_OPTIMISM_V2_ID}`
+      return goldskyUrl(process.env.GOLD_SKY_OPTIMISM_V2_ID, GOLDSKY_V2_BASE)
     case ChainId.AVALANCHE:
-      return `https://api.aws-us-east-1.goldsky.com/c/uniswap/gn/subgraphs/id/${process.env.GOLD_SKY_AVALANCHE_V2_ID}`
+      return goldskyUrl(process.env.GOLD_SKY_AVALANCHE_V2_ID, GOLDSKY_V2_BASE)
     case ChainId.BNB:
-      return `https://api.aws-us-east-1.goldsky.com/c/uniswap/gn/subgraphs/id/${process.env.GOLD_SKY_BNB_V2_ID}`
+      return goldskyUrl(process.env.GOLD_SKY_BNB_V2_ID, GOLDSKY_V2_BASE)
     case ChainId.BLAST:
-      return `https://api.aws-us-east-1.goldsky.com/c/uniswap/gn/subgraphs/id/${process.env.GOLD_SKY_BLAST_V2_ID}`
+      return goldskyUrl(process.env.GOLD_SKY_BLAST_V2_ID, GOLDSKY_V2_BASE)
     case ChainId.BASE:
-      return `https://api.aws-us-east-1.goldsky.com/c/uniswap/gn/subgraphs/id/${process.env.GOLD_SKY_BASE_V2_ID}`
+      return goldskyUrl(process.env.GOLD_SKY_BASE_V2_ID, GOLDSKY_V2_BASE)
     case ChainId.WORLDCHAIN:
-      return `https://api.aws-us-east-1.goldsky.com/c/uniswap/gn/subgraphs/id/${process.env.GOLD_SKY_WORLDCHAIN_V2_ID}`
+      return goldskyUrl(process.env.GOLD_SKY_WORLDCHAIN_V2_ID, GOLDSKY_V2_BASE)
     case ChainId.UNICHAIN_SEPOLIA:
-      return `https://api.aws-us-east-1.goldsky.com/c/uniswap/gn/subgraphs/id/${process.env.GOLD_SKY_ASTROCHAIN_SEPOLIA_V2_ID}`
+      return goldskyUrl(process.env.GOLD_SKY_ASTROCHAIN_SEPOLIA_V2_ID, GOLDSKY_V2_BASE)
     case ChainId.MONAD_TESTNET:
-      return `https://api.aws-us-east-1.goldsky.com/c/uniswap/gn/subgraphs/id/${process.env.GOLD_SKY_MONAD_TESTNET_V2_ID}`
+      return goldskyUrl(process.env.GOLD_SKY_MONAD_TESTNET_V2_ID, GOLDSKY_V2_BASE)
     case ChainId.UNICHAIN:
-      return `https://api.aws-us-east-1.goldsky.com/c/uniswap/gn/subgraphs/id/${process.env.GOLD_SKY_UNICHAIN_V2_ID}`
+      return goldskyUrl(process.env.GOLD_SKY_UNICHAIN_V2_ID, GOLDSKY_V2_BASE)
     case ChainId.SONEIUM:
-      return `https://api.aws-us-east-1.goldsky.com/c/uniswap/gn/subgraphs/id/${process.env.GOLD_SKY_SONEIUM_V2_ID}`
+      return goldskyUrl(process.env.GOLD_SKY_SONEIUM_V2_ID, GOLDSKY_V2_BASE)
     case ChainId.MONAD:
-      return `https://api.goldsky.com/api/private/${process.env.GOLD_SKY_API_KEY}/subgraphs/uniswap-v2-monad/prod/gn`
+      return goldskyPrivateUrl(process.env.GOLD_SKY_API_KEY, 'uniswap-v2-monad/prod/gn')
     case ChainId.XLAYER:
-      return `https://gateway.thegraph.com/api/subgraphs/id/${process.env.GRAPH_XLAYER_V2_ID}`
+      return theGraphUrl(process.env.GRAPH_XLAYER_V2_ID)
     default:
       return undefined
   }
