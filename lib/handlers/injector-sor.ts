@@ -49,6 +49,7 @@ import {
 } from '@uniswap/smart-order-router'
 import { TokenList } from '@uniswap/token-lists'
 import { default as bunyan, default as Logger } from 'bunyan'
+import { getDevErrorStreams } from '../util/dev-error-stream'
 import _ from 'lodash'
 import NodeCache from 'node-cache'
 import UNSUPPORTED_TOKEN_LIST from './../config/unsupported.tokenlist.json'
@@ -117,6 +118,7 @@ export const SUPPORTED_CHAINS: ChainId[] = [
   ChainId.SONEIUM,
   ChainId.XLAYER,
   ChainId.CYBER_TESTNET,
+  ChainId.FLOW_TESTNET,
 ]
 const DEFAULT_TOKEN_LIST = 'https://assets.swap.w3us.site/networks/anime.json'
 
@@ -151,7 +153,7 @@ export type ContainerDependencies = {
   v2QuoteProvider: V2QuoteProvider
   simulator: Simulator
   routeCachingProvider?: IRouteCachingProvider
-  tokenValidatorProvider: TokenValidatorProvider
+  tokenValidatorProvider?: TokenValidatorProvider
   tokenPropertiesProvider: ITokenPropertiesProvider
   v2Supported: ChainId[]
   v4Supported?: ChainId[]
@@ -183,6 +185,7 @@ export abstract class InjectorSOR<Router, QueryParams> extends Injector<
       level: bunyan.INFO,
       activityId: activityId,
     })
+    for (const s of getDevErrorStreams()) log.addStream(s)
     setGlobalLogger(log)
 
     try {
@@ -264,13 +267,13 @@ export abstract class InjectorSOR<Router, QueryParams> extends Injector<
             new NodeJSCache(new NodeCache({ stdTTL: 180, useClones: false }))
           )
           
-          if (chainId === ChainId.CYBER_TESTNET) {
+          if (chainId === ChainId.CYBER_TESTNET || chainId === ChainId.FLOW_TESTNET) {
             log.info(
               {
                 chainId,
                 providerType: 'V4PoolProvider',
               },
-              `V4PoolProvider created for CYBER_TESTNET - will check pools on-chain for requested tokens`
+              `V4PoolProvider created for ${ChainId[chainId]} - will check pools on-chain for requested tokens`
             )
           }
 
@@ -314,21 +317,26 @@ export abstract class InjectorSOR<Router, QueryParams> extends Injector<
             tokenFeeFetcher = onChainTokenFeeFetcher
           }
 
-          const tokenValidatorProvider = new TokenValidatorProvider(
-            chainId,
-            multicall2Provider,
-            new NodeJSCache(new NodeCache({ stdTTL: 30000, useClones: false }))
-          )
+          const tokenValidatorProvider = chainId === ChainId.MAINNET
+            ? new TokenValidatorProvider(
+                chainId,
+                multicall2Provider,
+                new NodeJSCache(new NodeCache({ stdTTL: 30000, useClones: false }))
+              )
+            : undefined
           const tokenPropertiesProvider = new TokenPropertiesProvider(
             chainId,
             new NodeJSCache(new NodeCache({ stdTTL: 30000, useClones: false })),
             tokenFeeFetcher
           )
           const underlyingV2PoolProvider = new V2PoolProvider(chainId, multicall2Provider, tokenPropertiesProvider)
+          const v2PairCache = V2_PAIRS_CACHE_TABLE_NAME
+            ? new V2DynamoCache(V2_PAIRS_CACHE_TABLE_NAME)
+            : new NodeJSCache<{ pair: any; block?: number }>(new NodeCache({ stdTTL: 300, useClones: false }))
           const v2PoolProvider = new CachingV2PoolProvider(
             chainId,
             underlyingV2PoolProvider,
-            new V2DynamoCache(V2_PAIRS_CACHE_TABLE_NAME!)
+            v2PairCache
           )
           const v4PoolParams = getApplicableV4FeesTickspacingsHooks(chainId).concat(
             EXTRA_V4_FEE_TICK_SPACINGS_HOOK_ADDRESSES[chainId] ?? emptyV4FeeTickSpacingsHookAddresses
@@ -352,7 +360,7 @@ export abstract class InjectorSOR<Router, QueryParams> extends Injector<
           ] = await Promise.all([
             AWSTokenListProvider.fromTokenListS3Bucket(chainId, TOKEN_LIST_CACHE_BUCKET!, DEFAULT_TOKEN_LIST),
             CachingTokenListProvider.fromTokenList(chainId, UNSUPPORTED_TOKEN_LIST as TokenList, blockedTokenCache),
-            (chainId === ChainId.CYBER_TESTNET
+            (chainId === ChainId.CYBER_TESTNET || chainId === ChainId.FLOW_TESTNET
               ? (() => {
                   const staticProvider = new StaticV4SubgraphProvider(chainId, v4PoolProvider, v4PoolParams)
                   log.info(
@@ -361,7 +369,7 @@ export abstract class InjectorSOR<Router, QueryParams> extends Injector<
                       v4PoolParamsCount: v4PoolParams.length,
                       providerType: 'StaticV4SubgraphProvider',
                     },
-                    `Using StaticV4SubgraphProvider for CYBER_TESTNET`
+                    `Using StaticV4SubgraphProvider for ${ChainId[chainId]}`
                   )
                   const originalGetPools = staticProvider.getPools.bind(staticProvider)
                   staticProvider.getPools = async () => {
@@ -595,6 +603,7 @@ export abstract class InjectorSOR<Router, QueryParams> extends Injector<
             ChainId.UNICHAIN,
             ChainId.SONEIUM,
             ChainId.XLAYER,
+            ChainId.FLOW_TESTNET,
           ]
 
           const v4Supported = [
@@ -615,6 +624,7 @@ export abstract class InjectorSOR<Router, QueryParams> extends Injector<
             ChainId.CELO,
             ChainId.XLAYER,
             ChainId.CYBER_TESTNET,
+            ChainId.FLOW_TESTNET,
           ]
 
           // https://linear.app/uniswap/issue/ROUTE-467/tenderly-simulation-during-caching-lambda
@@ -651,6 +661,7 @@ export abstract class InjectorSOR<Router, QueryParams> extends Injector<
             ChainId.SONEIUM,
             ChainId.MONAD,
             ChainId.XLAYER,
+            ChainId.FLOW_TESTNET,
           ]
           const mixedSupported = [
             ChainId.MAINNET,
@@ -668,6 +679,7 @@ export abstract class InjectorSOR<Router, QueryParams> extends Injector<
             ChainId.SONEIUM,
             ChainId.XLAYER,
             ChainId.MONAD,
+            ChainId.FLOW_TESTNET,
           ]
           const mixedCrossLiquidityV3AgainstV4Supported: ChainId[] = [ChainId.BASE]
 

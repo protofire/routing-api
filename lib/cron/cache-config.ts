@@ -216,6 +216,8 @@ export const v3SubgraphUrlOverride = (chainId: ChainId) => {
       return goldskyPrivateUrl(process.env.GOLD_SKY_API_KEY, 'uniswap-v3-monad/prod/gn')
     case ChainId.XLAYER:
       return theGraphUrl(process.env.GRAPH_XLAYER_V3_ID)
+    case ChainId.FLOW_TESTNET:
+      return 'https://graph.swap.w3us.site/subgraphs/name/flow-testnet/uniswap-v3'
     default:
       return undefined
   }
@@ -255,6 +257,8 @@ export const v2SubgraphUrlOverride = (chainId: ChainId) => {
       return goldskyPrivateUrl(process.env.GOLD_SKY_API_KEY, 'uniswap-v2-monad/prod/gn')
     case ChainId.XLAYER:
       return theGraphUrl(process.env.GRAPH_XLAYER_V2_ID)
+    case ChainId.FLOW_TESTNET:
+      return 'https://graph.swap.w3us.site/subgraphs/name/flow-testnet/uniswap-v2'
     default:
       return undefined
   }
@@ -356,6 +360,7 @@ export const chainProtocols: ChainProtocol[] = [
   // V3.
   makeV3Entry(ChainId.MONAD, 90000, 3, v3TrackedEthThreshold, v3UntrackedUsdThreshold),
   makeV3Entry(ChainId.XLAYER, 90000, 3, v3TrackedEthThreshold, v3UntrackedUsdThreshold, process.env.GRAPH_BEARER_TOKEN),
+  makeV3Entry(ChainId.FLOW_TESTNET, 90000, 3, v3TrackedEthThreshold, v3UntrackedUsdThreshold),
   // V2.
   makeV2Entry(ChainId.ARBITRUM_ONE, 90000, 3, 1000, v2TrackedEthThreshold, v2UntrackedUsdThreshold),
   makeV2Entry(ChainId.POLYGON, 90000, 3, 1000, v2TrackedEthThreshold, v2UntrackedUsdThreshold),
@@ -370,6 +375,7 @@ export const chainProtocols: ChainProtocol[] = [
   makeV2Entry(ChainId.SONEIUM, 90000, 3, 1000, v2TrackedEthThreshold, v2UntrackedUsdThreshold),
   makeV2Entry(ChainId.MONAD, 90000, 3, 1000, v2TrackedEthThreshold, v2UntrackedUsdThreshold, process.env.GOLD_SKY_BEARER_TOKEN),
   makeV2Entry(ChainId.XLAYER, 90000, 3, 1000, v2TrackedEthThreshold, v2UntrackedUsdThreshold, process.env.GRAPH_BEARER_TOKEN),
+  makeV2Entry(ChainId.FLOW_TESTNET, 90000, 3, 1000, v2TrackedEthThreshold, v2UntrackedUsdThreshold),
   // V4.
   makeV4Entry(ChainId.SEPOLIA, 90000, 3, v4TrackedEthThreshold, v4BaseZoraTrackedEthThreshold, HOOKS_FOR_V4_SUBGRAPH_LOW_TVL_FILTERING, v4UntrackedUsdThreshold),
   makeV4Entry(ChainId.ARBITRUM_ONE, 90000, 3, v4TrackedEthThreshold, v4BaseZoraTrackedEthThreshold, HOOKS_FOR_V4_SUBGRAPH_LOW_TVL_FILTERING, v4UntrackedUsdThreshold),

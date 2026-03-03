@@ -56,4 +56,5 @@ export const EXTRA_V4_FEE_TICK_SPACINGS_HOOK_ADDRESSES: { [chain in ChainId]: Ar
   [ChainId.CYBER_TESTNET]: [
     [3000, 60, ADDRESS_ZERO],
   ],
+  [ChainId.FLOW_TESTNET]: emptyV4FeeTickSpacingsHookAddresses,
 }

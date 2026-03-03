@@ -52,5 +52,14 @@
     "providerInitialWeights": [1],
     "providerUrls": ["UNIRPC_0"],
     "providerNames": ["UNIRPC"]
+  },
+  {
+    "chainId": 545,
+    "useMultiProviderProb": 1,
+    "latencyEvaluationSampleProb": 0,
+    "healthCheckSampleProb": 0,
+    "providerInitialWeights": [1],
+    "providerUrls": ["WEB3_RPC_GATEWAY_545"],
+    "providerNames": ["WEB3_RPC_GATEWAY"]
   }
 ]

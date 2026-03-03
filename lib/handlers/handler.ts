@@ -7,6 +7,7 @@ import {
   Context,
 } from 'aws-lambda'
 import { default as bunyan, default as Logger } from 'bunyan'
+import { getDevErrorStreams } from '../util/dev-error-stream'
 
 export type APIGatewayProxyHandler = (event: APIGatewayProxyEvent, context: Context) => Promise<APIGatewayProxyResult>
 
@@ -120,6 +121,7 @@ export abstract class APIGLambdaHandler<CInj, RInj extends BaseRInj, ReqBody, Re
             level: bunyan.INFO,
             requestId: context.awsRequestId,
           })
+          for (const s of getDevErrorStreams()) log.addStream(s)
 
           log.info({ event, context }, 'Request started.')
 

@@ -13,4 +13,5 @@ export const TESTNETS = [
   ChainId.ARBITRUM_GOERLI,
   ChainId.UNICHAIN_SEPOLIA,
   ChainId.MONAD_TESTNET,
+  ChainId.FLOW_TESTNET,
 ]

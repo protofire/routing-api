@@ -4,7 +4,7 @@ import { ChainId } from '@uniswap/sdk-core'
 
 export const SUPPORTED_PROTOCOL_VERSIONS = [Protocol.V2, Protocol.V3, Protocol.V4]
 
-const V4_ONLY_CHAINS = [ChainId.CYBER_TESTNET]
+const V4_ONLY_CHAINS = [ChainId.CYBER_TESTNET, ChainId.FLOW_TESTNET]
 
 export function convertStringRouterVersionToEnum(routerVersion?: string, chainId?: ChainId): UniversalRouterVersion {
   const validVersions = Object.values(UniversalRouterVersion)
