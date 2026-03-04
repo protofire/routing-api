@@ -2,7 +2,7 @@ import * as path from 'path'
 import bunyan from 'bunyan'
 
 export function getDevErrorStreams(): bunyan.Stream[] {
-  if (process.env.NODE_ENV === 'production') return []
+  if (process.env.NODE_ENV === 'production' || process.env.AWS_LAMBDA_FUNCTION_NAME) return []
   const logPath = process.env.DEV_ERRORS_LOG || path.resolve(process.cwd(), 'dev-errors.log')
   return [{ level: 'error', path: logPath }]
 }
