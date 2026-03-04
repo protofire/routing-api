@@ -78,6 +78,11 @@ export class CurrencyLookup {
   }
 
   checkOnChain = async (tokenRaw: string): Promise<Token | undefined> => {
+    if (!this.tokenProvider) {
+      this.log.warn('tokenProvider is undefined, skipping on-chain token lookup')
+      return undefined
+    }
+
     this.log.debug(`Getting input token ${tokenRaw} from chain`)
 
     // The ITokenListProvider interface expects a list of addresses to lookup tokens.

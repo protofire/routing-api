@@ -27,6 +27,9 @@ V2_SUBGRAPH_URL=<url|empty>
 V3_SUBGRAPH_URL=<url|empty>
 V4_SUBGRAPH_URL=<url|empty>
 
+# Token list:
+TOKEN_LIST_URL=<url|empty>    # e.g. https://raw.githubusercontent.com/.../flow-testnet.json
+
 # Cache config:
 BLOCKS_TO_LIVE=<number>       # e.g. 60 (route cache TTL in blocks)
 CACHE_ROLLOUT_PERCENT=<0-100> # e.g. 100 for testnet
@@ -223,7 +226,45 @@ makeV3Entry(ChainId.CHAIN_NAME, 90000, 3, v3TrackedEthThreshold, v3UntrackedUsdT
 makeV4Entry(ChainId.CHAIN_NAME, 90000, 3, v4TrackedEthThreshold, v4BaseZoraTrackedEthThreshold, HOOKS_FOR_V4_SUBGRAPH_LOW_TVL_FILTERING, v4UntrackedUsdThreshold),
 ```
 
-### 13. Configure gas limits (optional)
+### 13. Configure token list (if chain has a custom token list)
+
+The default token list (`DEFAULT_TOKEN_LIST` in `injector-sor.ts`) may not contain tokens for the new chain. If the chain has its own token list, configure it in two places.
+
+**File:** `lib/handlers/injector-sor.ts`
+
+Add an entry to `CHAIN_TOKEN_LIST_OVERRIDES` so the token list provider loads the correct list for this chain:
+
+```ts
+const CHAIN_TOKEN_LIST_OVERRIDES: Partial<Record<ChainId, string>> = {
+  // ... existing entries
+  [ChainId.CHAIN_NAME]: 'TOKEN_LIST_URL',
+}
+```
+
+This map is used when creating the `AWSTokenListProvider`:
+
+```ts
+AWSTokenListProvider.fromTokenListS3Bucket(
+  chainId,
+  TOKEN_LIST_CACHE_BUCKET!,
+  CHAIN_TOKEN_LIST_OVERRIDES[chainId] ?? DEFAULT_TOKEN_LIST
+)
+```
+
+**File:** `lib/cron/cache-token-lists.ts`
+
+Add the token list URL to the `TOKEN_LISTS` array so it gets cached in S3:
+
+```ts
+const TOKEN_LISTS = [
+  // ... existing entries
+  'TOKEN_LIST_URL',
+]
+```
+
+> **Why both files?** `cache-token-lists.ts` is a cron that fetches the token list JSON and stores it in S3. `injector-sor.ts` tells the token list provider which S3 key to read for a given chain. If the URL is only in `injector-sor.ts`, the S3 object won't exist and the provider will fail silently.
+
+### 14. Configure gas limits (optional)
 
 **File:** `lib/util/gasLimit.ts`
 
@@ -233,7 +274,7 @@ Only if chain needs a custom gas limit:
 [ChainId.CHAIN_NAME]: <custom_gas_limit>,
 ```
 
-### 14. Build and verify
+### 15. Build and verify
 
 ```bash
 cd routing-api
@@ -244,7 +285,7 @@ npm run build
 
 | File | Change |
 |------|--------|
-| `lib/handlers/injector-sor.ts` | SUPPORTED_CHAINS + protocol arrays + V4 provider |
+| `lib/handlers/injector-sor.ts` | SUPPORTED_CHAINS + protocol arrays + V4 provider + token list override |
 | `lib/config/rpcProviderProdConfig.json` | RPC provider config |
 | `lib/rpc/utils.ts` | Network name mapping + provider URL |
 | `lib/util/onChainQuoteProviderConfigs.ts` | NEW_QUOTER_DEPLOY_BLOCK + LIKELY_OUT_OF_GAS_THRESHOLD |
@@ -256,6 +297,7 @@ npm run build
 | `lib/util/supportedProtocolVersions.ts` | V4_ONLY_CHAINS (if applicable) |
 | `lib/util/tenderlyNewEndpointRolloutPercent.ts` | Tenderly config |
 | `lib/cron/cache-config.ts` | Subgraph URLs + chainProtocols entries |
+| `lib/cron/cache-token-lists.ts` | Token list URL for S3 caching |
 | `lib/util/gasLimit.ts` | Gas limit (if custom) |
 
 ## Environment Variables

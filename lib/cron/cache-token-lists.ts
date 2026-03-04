@@ -3,7 +3,10 @@ import { S3 } from 'aws-sdk'
 import axios from 'axios'
 import { default as bunyan, default as Logger } from 'bunyan'
 
-const TOKEN_LISTS = ['https://assets.swap.w3us.site/networks/abstract.json']
+const TOKEN_LISTS = [
+  'https://assets.swap.w3us.site/networks/abstract.json',
+  'https://raw.githubusercontent.com/protofire/token-list/refs/heads/main/networks/flow-testnet.json',
+]
 
 const handler: ScheduledHandler = async (event: EventBridgeEvent<string, void>) => {
   const log: Logger = bunyan.createLogger({

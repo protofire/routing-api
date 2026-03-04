@@ -122,6 +122,10 @@ export const SUPPORTED_CHAINS: ChainId[] = [
 ]
 const DEFAULT_TOKEN_LIST = 'https://assets.swap.w3us.site/networks/anime.json'
 
+const CHAIN_TOKEN_LIST_OVERRIDES: Partial<Record<ChainId, string>> = {
+  [ChainId.FLOW_TESTNET]: 'https://raw.githubusercontent.com/protofire/token-list/refs/heads/main/networks/flow-testnet.json',
+}
+
 export interface RequestInjected<Router> extends BaseRInj {
   chainId: ChainId
   metric: IMetric
@@ -358,7 +362,7 @@ export abstract class InjectorSOR<Router, QueryParams> extends Injector<
             v3SubgraphProvider,
             v2SubgraphProvider,
           ] = await Promise.all([
-            AWSTokenListProvider.fromTokenListS3Bucket(chainId, TOKEN_LIST_CACHE_BUCKET!, DEFAULT_TOKEN_LIST),
+            AWSTokenListProvider.fromTokenListS3Bucket(chainId, TOKEN_LIST_CACHE_BUCKET!, CHAIN_TOKEN_LIST_OVERRIDES[chainId] ?? DEFAULT_TOKEN_LIST),
             CachingTokenListProvider.fromTokenList(chainId, UNSUPPORTED_TOKEN_LIST as TokenList, blockedTokenCache),
             (chainId === ChainId.CYBER_TESTNET || chainId === ChainId.FLOW_TESTNET
               ? (() => {
