@@ -102,11 +102,23 @@ if (chainId === ChainId.CHAIN_NAME) {
 }
 ```
 
-### 4. Configure on-chain quote provider (optional)
+### 4. Configure on-chain quote provider
 
 **File:** `lib/util/onChainQuoteProviderConfigs.ts`
 
-Defaults work for most chains. Add explicit entries only if needed:
+Two maps **must** be updated for every chain:
+
+```ts
+// NEW_QUOTER_DEPLOY_BLOCK — block at which the new QuoterV2 was deployed.
+// Use -1 if not deployed (quotes will use the legacy quoter):
+[ChainId.CHAIN_NAME]: -1,
+
+// LIKELY_OUT_OF_GAS_THRESHOLD — gas limit below which a quote is
+// considered "likely out of gas". Use 0 if not applicable:
+[ChainId.CHAIN_NAME]: 0,
+```
+
+Additional maps are optional — defaults work for most chains:
 
 ```ts
 // RETRY_OPTIONS — if custom retry logic needed
@@ -141,7 +153,17 @@ Defaults work for most chains. Add explicit entries only if needed:
 [ChainId.CHAIN_NAME]: emptyV4FeeTickSpacingsHookAddresses,
 ```
 
-### 8. Add to testnet list (if IS_TESTNET)
+### 8. Configure hooks allowlist
+
+**File:** `lib/util/hooksAddressesAllowlist.ts`
+
+Every chain with V4 support needs an entry. Use `ADDRESS_ZERO` to allow only the default (no-hook) pools, or list specific hook contract addresses:
+
+```ts
+[ChainId.CHAIN_NAME]: [ADDRESS_ZERO],
+```
+
+### 9. Add to testnet list (if IS_TESTNET)
 
 **File:** `lib/util/testNets.ts`
 
@@ -149,7 +171,7 @@ Defaults work for most chains. Add explicit entries only if needed:
 ChainId.CHAIN_NAME,
 ```
 
-### 9. Configure protocol version support
+### 10. Configure protocol version support
 
 **File:** `lib/util/supportedProtocolVersions.ts`
 
@@ -160,7 +182,7 @@ If the chain is V4-only (no V3 subgraph, uses V2+V4 via UniversalRouter V2.0):
 ChainId.CHAIN_NAME,
 ```
 
-### 10. Configure Tenderly rollout
+### 11. Configure Tenderly rollout
 
 **File:** `lib/util/tenderlyNewEndpointRolloutPercent.ts`
 
@@ -168,7 +190,7 @@ ChainId.CHAIN_NAME,
 [ChainId.CHAIN_NAME]: 0,  // start at 0, increase after testing
 ```
 
-### 11. Configure subgraph providers
+### 12. Configure subgraph providers
 
 **File:** `lib/cron/cache-config.ts`
 
@@ -201,7 +223,7 @@ makeV3Entry(ChainId.CHAIN_NAME, 90000, 3, v3TrackedEthThreshold, v3UntrackedUsdT
 makeV4Entry(ChainId.CHAIN_NAME, 90000, 3, v4TrackedEthThreshold, v4BaseZoraTrackedEthThreshold, HOOKS_FOR_V4_SUBGRAPH_LOW_TVL_FILTERING, v4UntrackedUsdThreshold),
 ```
 
-### 12. Configure gas limits (optional)
+### 13. Configure gas limits (optional)
 
 **File:** `lib/util/gasLimit.ts`
 
@@ -211,7 +233,7 @@ Only if chain needs a custom gas limit:
 [ChainId.CHAIN_NAME]: <custom_gas_limit>,
 ```
 
-### 13. Build and verify
+### 14. Build and verify
 
 ```bash
 cd routing-api
@@ -225,14 +247,15 @@ npm run build
 | `lib/handlers/injector-sor.ts` | SUPPORTED_CHAINS + protocol arrays + V4 provider |
 | `lib/config/rpcProviderProdConfig.json` | RPC provider config |
 | `lib/rpc/utils.ts` | Network name mapping + provider URL |
+| `lib/util/onChainQuoteProviderConfigs.ts` | NEW_QUOTER_DEPLOY_BLOCK + LIKELY_OUT_OF_GAS_THRESHOLD |
 | `lib/util/newCachedRoutesRolloutPercent.ts` | Cache rollout % |
 | `lib/util/defaultBlocksToLiveRoutesDB.ts` | Route cache TTL |
 | `lib/util/extraV4FeeTiersTickSpacingsHookAddresses.ts` | V4 fee config |
+| `lib/util/hooksAddressesAllowlist.ts` | Hooks allowlist (required for V4 chains) |
 | `lib/util/testNets.ts` | Testnet flag (if testnet) |
 | `lib/util/supportedProtocolVersions.ts` | V4_ONLY_CHAINS (if applicable) |
 | `lib/util/tenderlyNewEndpointRolloutPercent.ts` | Tenderly config |
 | `lib/cron/cache-config.ts` | Subgraph URLs + chainProtocols entries |
-| `lib/util/onChainQuoteProviderConfigs.ts` | Quote provider (if custom) |
 | `lib/util/gasLimit.ts` | Gas limit (if custom) |
 
 ## Environment Variables

@@ -4,7 +4,7 @@ import JSBI from 'jsbi'
 import { TradeTypeParam } from './schema/quote-schema'
 import { computePortionAmount, parseDeadline, parseSlippageTolerance, populateFeeOptions } from '../shared'
 import { PermitSingle } from '@uniswap/permit2-sdk'
-import { UNIVERSAL_ROUTER_ADDRESS, UniversalRouterVersion } from '@uniswap/universal-router-sdk'
+import { UNIVERSAL_ROUTER_ADDRESS, UniversalRouterVersion, URVersion } from '@uniswap/universal-router-sdk'
 import { utils } from 'ethers'
 
 export type SwapOptionsUniversalRouterInput = {
@@ -136,6 +136,7 @@ export class SwapOptionsFactory {
     const swapParams: SwapOptions = {
       type: SwapType.UNIVERSAL_ROUTER,
       version: universalRouterVersion,
+      urVersion: universalRouterVersion === UniversalRouterVersion.V2_1 ? URVersion.V2_1 : undefined,
       deadlineOrPreviousBlockhash: deadline ? parseDeadline(deadline) : undefined,
       recipient: recipient,
       slippageTolerance: parseSlippageTolerance(slippageTolerance),

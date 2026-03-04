@@ -13,7 +13,7 @@ export function convertStringRouterVersionToEnum(routerVersion?: string, chainId
     return parsedVersion
   }
   if (chainId && V4_ONLY_CHAINS.includes(chainId)) {
-    return UniversalRouterVersion.V2_0
+    return UniversalRouterVersion.V2_1
   }
   return UniversalRouterVersion.V1_2
 }
