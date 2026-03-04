@@ -51,6 +51,11 @@ export class CurrencyLookup {
   }
 
   checkTokenLists = async (tokenRaw: string): Promise<Token | undefined> => {
+    if (!this.tokenListProvider) {
+      this.log.warn('tokenListProvider is undefined, skipping token list lookup')
+      return undefined
+    }
+
     let token: Token | undefined = undefined
     if (isAddress(tokenRaw)) {
       token = await this.tokenListProvider.getTokenByAddress(tokenRaw)
