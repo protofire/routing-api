@@ -414,6 +414,8 @@ export class RoutingAPIPipeline extends Stack {
       'UNIRPC_0',
       // cyber testnet
       'WEB3_RPC_GATEWAY_111557560',
+      // flow testnet
+      'WEB3_RPC_GATEWAY_545',
     ]
     for (const provider of RPC_GATEWAY_PROVIDERS) {
       jsonRpcProviders[provider] = jsonRpcProvidersSecret.secretValueFromJson(provider).toString()
@@ -721,6 +723,8 @@ const jsonRpcProviders = {
   UNIRPC_0: process.env.UNIRPC_0!,
   WEB3_RPC_111557560: process.env.WEB3_RPC_111557560!,
   WEB3_RPC_GATEWAY_111557560: process.env.WEB3_RPC_GATEWAY_111557560!,
+  WEB3_RPC_545: process.env.WEB3_RPC_545!,
+  WEB3_RPC_GATEWAY_545: process.env.WEB3_RPC_GATEWAY_545!,
 }
 
 // Local dev stack

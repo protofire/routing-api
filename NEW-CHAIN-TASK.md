@@ -274,7 +274,29 @@ Only if chain needs a custom gas limit:
 [ChainId.CHAIN_NAME]: <custom_gas_limit>,
 ```
 
-### 15. Build and verify
+### 15. Register RPC env var in CDK pipeline
+
+**File:** `bin/app.ts`
+
+This step is **critical** — without it, the Lambda never receives the RPC env var and the entire dependency chain (token providers, etc.) fails at runtime with errors like `TOKEN_OUT_INVALID`.
+
+**a)** Add to `RPC_GATEWAY_PROVIDERS` array (loaded from AWS Secrets Manager):
+
+```ts
+// Add after the last entry in the array:
+'WEB3_RPC_GATEWAY_<CHAIN_ID>',
+```
+
+**b)** Add to local dev `jsonRpcProviders` object (near end of file):
+
+```ts
+WEB3_RPC_<CHAIN_ID>: process.env.WEB3_RPC_<CHAIN_ID>!,
+WEB3_RPC_GATEWAY_<CHAIN_ID>: process.env.WEB3_RPC_GATEWAY_<CHAIN_ID>!,
+```
+
+> **Why?** `rpcProviderProdConfig.json` references `WEB3_RPC_GATEWAY_<CHAIN_ID>`, but `GlobalRpcProviders` reads it from `process.env`. The CDK pipeline in `bin/app.ts` is what copies the secret value into the Lambda's environment. If the key is missing from `RPC_GATEWAY_PROVIDERS`, the env var is never set, the chain is filtered out of `GlobalRpcProviders`, and all providers return `undefined`.
+
+### 16. Build and verify
 
 ```bash
 cd routing-api
@@ -299,6 +321,7 @@ npm run build
 | `lib/cron/cache-config.ts` | Subgraph URLs + chainProtocols entries |
 | `lib/cron/cache-token-lists.ts` | Token list URL for S3 caching |
 | `lib/util/gasLimit.ts` | Gas limit (if custom) |
+| `bin/app.ts` | RPC_GATEWAY_PROVIDERS array + local dev jsonRpcProviders (**required**) |
 
 ## Environment Variables
 
