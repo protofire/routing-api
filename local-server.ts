@@ -10,9 +10,25 @@ import * as url from 'url'
 import * as crypto from 'crypto'
 import { APIGatewayProxyEvent, Context } from 'aws-lambda'
 
+// Monkey-patch AWS S3 to fail fast when bucket is empty (local dev only).
+// In production, bucket names are always set via CDK. Locally they default
+// to '' which causes confusing UriParameterError stack traces from aws-sdk.
+// The routing code already handles S3 failures gracefully (falls back to
+// URI-based token lists and static subgraph providers).
+import S3 from 'aws-sdk/clients/s3'
+const _originalGetObject = (S3.prototype as any).getObject
+;(S3.prototype as any).getObject = function (params: any, callback: any) {
+  if (!params?.Bucket) {
+    return {
+      promise: () => Promise.reject(new Error(`[local-dev] S3 bucket not configured, skipping`)),
+    } as any
+  }
+  return _originalGetObject.call(this, params, callback)
+}
+
 // Minimal env defaults so the handler doesn't crash on missing AWS resources
 process.env.POOL_CACHE_BUCKET_3 = process.env.POOL_CACHE_BUCKET_3 || ''
-process.env.POOL_CACHE_GZIP_KEY = process.env.POOL_CACHE_GZIP_KEY || ''
+process.env.POOL_CACHE_GZIP_KEY = process.env.POOL_CACHE_GZIP_KEY || 'local'
 process.env.TOKEN_LIST_CACHE_BUCKET = process.env.TOKEN_LIST_CACHE_BUCKET || ''
 process.env.ROUTES_TABLE_NAME = process.env.ROUTES_TABLE_NAME || ''
 process.env.ROUTES_CACHING_REQUEST_FLAG_TABLE_NAME = process.env.ROUTES_CACHING_REQUEST_FLAG_TABLE_NAME || ''
