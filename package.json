@@ -44,7 +44,7 @@
     "chai": "^4.3.4",
     "chai-as-promised": "^7.1.1",
     "chai-subset": "^1.6.0",
-    "dynamodb-local": "^0.0.32",
+    "dynamodb-local": "^0.0.38",
     "esbuild": "^0.12.8",
     "eslint": "^7.29.0",
     "eslint-config-prettier": "^6.11.0",
