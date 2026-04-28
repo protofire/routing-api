@@ -17,5 +17,5 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           slack_webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
-          count: 30
-          severity: critical
+          count: 100
+          severity: critical,high
