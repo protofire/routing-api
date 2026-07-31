@@ -15,7 +15,7 @@ import { RoutingAPIStack } from './stacks/routing-api-stack'
 
 dotenv.config()
 // TODO: revert
-const SUPPORTED_CHAINS = [ChainId.ABSTRACT_MAINNET, ChainId.ZERO, ChainId.ANIME]
+const SUPPORTED_CHAINS = [ChainId.ABSTRACT_MAINNET, ChainId.ANIME]
 
 export class RoutingAPIStage extends Stage {
   public readonly url: CfnOutput
@@ -240,8 +240,6 @@ export class RoutingAPIPipeline extends Stack {
       'WEB3_RPC_GATEWAY_11124',
       // Abstract mainnet
       'WEB3_RPC_GATEWAY_2741',
-      // Zero
-      'WEB3_RPC_GATEWAY_543210',
       // CUSTOM Base
       'WEB3_RPC_GATEWAY_8453',
       // BOB
@@ -388,7 +386,6 @@ const jsonRpcProviders = {
   WEB3_RPC_8453: process.env.WEB3_RPC_8453!,
   WEB3_RPC_324: process.env.WEB3_RPC_324!,
   WEB3_RPC_11124: process.env.WEB3_RPC_11124!,
-  WEB3_RPC_543210: process.env.WEB3_RPC_543210!,
   WEB3_RPC_60808: process.env.WEB3_RPC_60808!,
   WEB3_RPC_7560: process.env.WEB3_RPC_7560!,
   WEB3_RPC_360: process.env.WEB3_RPC_360!,
@@ -447,8 +444,6 @@ const jsonRpcProviders = {
   // Abstract
   WEB3_RPC_GATEWAY_11124: process.env.WEB3_RPC_GATEWAY_11124!,
   WEB3_RPC_GATEWAY_2741: process.env.WEB3_RPC_GATEWAY_2741!,
-  // Zero
-  WEB3_RPC_GATEWAY_543210: process.env.WEB3_RPC_GATEWAY_543210!,
   // CUSTOM Base
   WEB3_RPC_GATEWAY_8453: process.env.WEB3_RPC_GATEWAY_8453!,
   // BOB

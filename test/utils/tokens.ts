@@ -37,7 +37,6 @@ import {
   USDC_REDSTONE_GARNET,
   USDC_SEPOLIA,
   USDC_SHAPE,
-  USDC_ZERO,
   USDC_ZORA,
   USDCE_ZKSYNC,
   USDT_ARBITRUM,
@@ -152,8 +151,6 @@ export const USDC_ON = (chainId: ChainId): Token => {
       return USDCE_ZKSYNC
     case ChainId.ABSTRACT_TESTNET:
       return USDC_ABSTRACT_TESTNET
-    case ChainId.ZERO:
-      return USDC_ZERO
     case ChainId.BOB:
       return USDC_BOB
     case ChainId.CYBER:

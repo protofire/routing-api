@@ -14,7 +14,6 @@ export function adhocCorrectGasUsed(estimatedGasUsed: BigNumber, chainId: ChainI
   switch (chainId) {
     case ChainId.ZKSYNC:
     case ChainId.ABSTRACT_TESTNET:
-    case ChainId.ZERO:
       if (estimatedGasUsed.gt(ZKSYNC_UPPER_SWAP_GAS_LIMIT)) {
         // this is a check to ensure that we don't return the gas used smaller than upper swap gas limit,
         // although this is unlikely

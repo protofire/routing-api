@@ -101,7 +101,6 @@ export const SUPPORTED_CHAINS: ChainId[] = [
   // ChainId.ZKSYNC,
   ChainId.BASE,
   ChainId.ABSTRACT_TESTNET,
-  ChainId.ZERO,
   ChainId.BOB,
   ChainId.CYBER,
   ChainId.SHAPE,
@@ -360,7 +359,6 @@ export abstract class InjectorSOR<Router, QueryParams> extends Injector<
             case ChainId.ZORA:
             case ChainId.ZKSYNC:
             case ChainId.ABSTRACT_TESTNET:
-            case ChainId.ZERO:
             case ChainId.BOB:
             case ChainId.CYBER:
             case ChainId.SHAPE:
@@ -486,7 +484,6 @@ export abstract class InjectorSOR<Router, QueryParams> extends Injector<
             ChainId.AVALANCHE,
             ChainId.BLAST,
             ChainId.ABSTRACT_TESTNET,
-            ChainId.ZERO,
             ChainId.CYBER,
             ChainId.SHAPE,
             ChainId.INK,
