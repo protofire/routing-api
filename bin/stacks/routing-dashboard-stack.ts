@@ -577,7 +577,7 @@ export class RoutingDashboardStack extends cdk.NestedStack {
     const rpcProvidersWidgetsForRoutingDashboard = new RpcProvidersWidgetsFactory(
       NAMESPACE,
       region,
-      MAINNETS.concat(TESTNETS)
+      MAINNETS.concat(TESTNETS),
     ).generateWidgets()
 
     new aws_cloudwatch.CfnDashboard(this, 'RoutingAPIDashboard', {
