@@ -3,7 +3,7 @@ import BaseJoi from '@hapi/joi'
 import { ChainId } from '@uniswap/sdk-core'
 
 // TODO: revert
-const SUPPORTED_CHAINS = [ChainId.ABSTRACT_MAINNET, ChainId.ZERO, ChainId.ANIME]
+const SUPPORTED_CHAINS = [ChainId.ABSTRACT_MAINNET, ChainId.ANIME]
 
 const Joi = BaseJoi.extend((joi) => ({
   base: joi.array(),
@@ -50,7 +50,9 @@ export const QuoteQueryParamsJoi = Joi.object({
   minSplits: Joi.number().max(7).optional(),
   forceCrossProtocol: Joi.boolean().optional(),
   forceMixedRoutes: Joi.boolean().optional(),
-  protocols: Joi.stringArray().items(Joi.string().valid('v2', 'v3', 'v4', 'mixed')).optional(),
+  protocols: Joi.stringArray()
+    .items(Joi.string().valid('v2', 'v3', 'v4', 'mixed'))
+    .optional(),
   simulateFromAddress: Joi.string().alphanum().max(42).optional(),
   permitSignature: Joi.string().optional(),
   permitNonce: Joi.string().optional(),

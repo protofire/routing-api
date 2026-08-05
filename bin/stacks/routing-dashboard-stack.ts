@@ -13,7 +13,7 @@ import { TESTNETS } from '../../lib/util/testNets'
 
 export const NAMESPACE = 'Uniswap'
 // TODO: revert
-const SUPPORTED_CHAINS = [ChainId.ABSTRACT_MAINNET, ChainId.ZERO, ChainId.ANIME]
+const SUPPORTED_CHAINS = [ChainId.ABSTRACT_MAINNET, ChainId.ANIME]
 
 export type LambdaWidget = {
   type: string
@@ -577,7 +577,7 @@ export class RoutingDashboardStack extends cdk.NestedStack {
     const rpcProvidersWidgetsForRoutingDashboard = new RpcProvidersWidgetsFactory(
       NAMESPACE,
       region,
-      MAINNETS.concat(TESTNETS)
+      MAINNETS.concat(TESTNETS),
     ).generateWidgets()
 
     new aws_cloudwatch.CfnDashboard(this, 'RoutingAPIDashboard', {

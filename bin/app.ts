@@ -15,7 +15,7 @@ import { RoutingAPIStack } from './stacks/routing-api-stack'
 
 dotenv.config()
 // TODO: revert
-const SUPPORTED_CHAINS = [ChainId.ABSTRACT_MAINNET, ChainId.ZERO, ChainId.ANIME]
+const SUPPORTED_CHAINS = [ChainId.ABSTRACT_MAINNET, ChainId.ANIME]
 
 export class RoutingAPIStage extends Stage {
   public readonly url: CfnOutput
@@ -43,7 +43,7 @@ export class RoutingAPIStage extends Stage {
       decentralizedNetworkApiKey?: string
       uniGraphQLEndpoint: string
       uniGraphQLHeaderOrigin: string
-    }
+    },
   ) {
     super(scope, id, props)
     const {
@@ -324,7 +324,7 @@ export class RoutingAPIPipeline extends Stack {
     const slackChannel = chatbot.SlackChannelConfiguration.fromSlackChannelConfigurationArn(
       this,
       'SlackChannel',
-      'arn:aws:chatbot::644039819003:chat-configuration/slack-channel/eng-ops-slack-chatbot'
+      'arn:aws:chatbot::644039819003:chat-configuration/slack-channel/eng-ops-slack-chatbot',
     )
 
     pipeline.buildPipeline()
@@ -336,7 +336,7 @@ export class RoutingAPIPipeline extends Stack {
   private addIntegTests(
     sourceArtifact: cdk.pipelines.CodePipelineSource,
     routingAPIStage: RoutingAPIStage,
-    applicationStage: cdk.pipelines.StageDeployment
+    applicationStage: cdk.pipelines.StageDeployment,
   ) {
     const testAction = new CodeBuildStep(`IntegTests-${routingAPIStage.stageName}`, {
       projectName: `IntegTests-${routingAPIStage.stageName}`,
