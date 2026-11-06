@@ -99,18 +99,11 @@ export const SUPPORTED_CHAINS: ChainId[] = [
   // ChainId.BLAST,
   // ChainId.ZORA,
   // ChainId.ZKSYNC,
-  ChainId.BASE,
-  ChainId.ABSTRACT_TESTNET,
-  ChainId.BOB,
-  ChainId.CYBER,
-  ChainId.SHAPE,
-  ChainId.INK,
-  ChainId.REDSTONE,
-  ChainId.REDSTONE_GARNET,
   ChainId.ABSTRACT_MAINNET,
   ChainId.ANIME,
-  ChainId.ANIME_TESTNET,
-  ChainId.MODE,
+  ChainId.SHAPE,
+  ChainId.INK,
+  ChainId.BOB,
 ]
 const DEFAULT_TOKEN_LIST = 'https://api-abstract.reservoir.tools/tokenlist/v1'
 
